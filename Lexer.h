@@ -1,0 +1,28 @@
+#ifndef LEXER_H
+#define LEXER_H
+#define maxlen 512
+#define BUFFER_SIZE 1024
+#include "DataStructure.h"
+#include "hash.h"
+// Define LEX
+class Lexer
+{
+public:
+    Lexer();
+    void token_analysis();
+private:
+    Hash<key_word> keywordTable;
+    Hash<symbol> symbolTable;
+    inline int is_blank(char c);
+    void id_identify();
+    void digits_identify();
+    void string_identify();
+    void comment_identify();
+    void operator_identify();
+    void set_keyword();
+    char BUFFER[BUFFER_SIZE];
+    char tmp_token[maxlen];
+    int line;
+    int start_p, forward_p;
+};
+#endif // LEXER_H

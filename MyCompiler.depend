@@ -1,0 +1,30 @@
+# depslib dependency file v1.0
+1459210149 source:d:\code\mycompiler\lexer.cpp
+	<iostream>
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	"Lexer.h"
+	"hash.h"
+	"DataStructure.h"
+	"CodeDef.h"
+
+1385316878 source:d:\code\mycompiler\main.cpp
+	<iostream>
+
+1459213455 source:d:\code\mycompiler\hash.cpp
+	<iostream>
+	<string.h>
+	"hash.h"
+	"DataStructure.h"
+
+1459177152 d:\code\mycompiler\hash.h
+
+1459179818 d:\code\mycompiler\lexer.h
+	"DataStructure.h"
+	"hash.h"
+
+1459179466 d:\code\mycompiler\datastructure.h
+
+1459173501 d:\code\mycompiler\codedef.h
+
