@@ -39,6 +39,8 @@
 		<Unit filename="hash.cpp" />
 		<Unit filename="hash.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="strfunction.cpp" />
+		<Unit filename="strfunction.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

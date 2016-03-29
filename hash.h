@@ -6,8 +6,9 @@ class Hash{
 public:
     Hash();
     void insert_element(T element);
-    int search_element(const char* key);
+    T* search_element(char* key);
     int delete_element(const char* key);
+    int rpos;
 private:
     T* Array[BUCKET_SIZE];
 };

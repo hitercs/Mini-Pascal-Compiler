@@ -1,9 +1,10 @@
 #include <iostream>
-
+#include "Lexer.h"
 using namespace std;
 
-int main()
+int main(int argc, char* agrv[])
 {
-    cout << "Hello world!" << endl;
+    Lexer lex;
+    lex.token_analysis();
     return 0;
 }

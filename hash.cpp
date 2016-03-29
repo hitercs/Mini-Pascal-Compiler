@@ -2,17 +2,20 @@
 #include <string.h>
 #include "hash.h"
 #include "DataStructure.h"
+#include "strfunction.h"
 using namespace std;
 //Hash function
-int DJBHash(const char* s)
+unsigned int SDBMHash(const char *str)
 {
-    long h = 5381;
-    while (*s != '\0')
+    unsigned int hash = 0;
+    const char* tmp = str;
+    while (*tmp)
     {
-        h = ((h << 5) + h) + *s;
-        s ++;
+        // equivalent to: hash = 65599*hash + (*str++);
+        hash = *(tmp++) + (hash << 6) + (hash << 16) - hash;
     }
-    return h % BUCKET_SIZE;
+
+    return (hash & 0x7FFFFFFF)%BUCKET_SIZE;
 }
 
 //Hash definition
@@ -20,14 +23,17 @@ template <class T>
 Hash<T>::Hash()
 {
     memset(Array, 0, BUCKET_SIZE*sizeof(T*));
+    rpos = 0;
 }
 template <class T>
 void Hash<T>::insert_element(T element)
 {
-    int pos = DJBHash(element.name);
+    str2upper(element.name);
+    int pos = SDBMHash(element.name);
     T* ptr = Array[pos];
     T* p = new T;
     *p = element;
+    rpos = pos;
     if (ptr)
     {
         while(ptr->next)
@@ -42,9 +48,10 @@ void Hash<T>::insert_element(T element)
     }
 }
 template <class T>
-int Hash<T>::search_element(const char* key)
+T* Hash<T>::search_element(char* key)
 {
-    int pos = DJBHash(key);
+    str2upper(key);
+    int pos = SDBMHash(key);
     T *p = Array[pos];
     int i = 0;
     if (p)
@@ -56,10 +63,11 @@ int Hash<T>::search_element(const char* key)
         }
         if (p)
         {
-            return pos;
+            rpos = pos;
+            return p;
         }
     }
-    return -1;
+    return NULL;
 }
 template <class T>
 int Hash<T>::delete_element(const char* key)
