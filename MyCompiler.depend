@@ -14,7 +14,7 @@
 	<iostream>
 	"Lexer.h"
 
-1459256087 source:d:\code\mycompiler\hash.cpp
+1459256266 source:d:\code\mycompiler\hash.cpp
 	<iostream>
 	<string.h>
 	"hash.h"
@@ -27,7 +27,8 @@
 	"DataStructure.h"
 	"hash.h"
 
-1459179466 d:\code\mycompiler\datastructure.h
+1459353166 d:\code\mycompiler\datastructure.h
+	<string.h>
 
 1459173501 d:\code\mycompiler\codedef.h
 
