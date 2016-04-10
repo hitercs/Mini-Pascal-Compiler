@@ -27,7 +27,7 @@
 	"DataStructure.h"
 	"hash.h"
 
-1459353166 d:\code\mycompiler\datastructure.h
+1460215991 d:\code\mycompiler\datastructure.h
 	<string.h>
 
 1459173501 d:\code\mycompiler\codedef.h
@@ -40,4 +40,22 @@
 	<iostream>
 	<ctype.h>
 	"strfunction.h"
+
+1460185374 source:d:\code\mycompiler\bibuffer.cpp
+	<iostream>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"BiBuffer.h"
+
+1460183260 d:\code\mycompiler\bibuffer.h
+	<stdio.h>
+
+1460218393 source:d:\code\mycompiler\mystack.cpp
+	"mystack.h"
+	<iostream>
+	<stdio.h>
+	<stdlib.h>
+
+1460217798 d:\code\mycompiler\mystack.h
 

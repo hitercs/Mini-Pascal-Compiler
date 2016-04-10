@@ -32,13 +32,19 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="BiBuffer.cpp" />
+		<Unit filename="BiBuffer.h" />
 		<Unit filename="CodeDef.h" />
 		<Unit filename="DataStructure.h" />
 		<Unit filename="Lexer.cpp" />
 		<Unit filename="Lexer.h" />
+		<Unit filename="Yaccer.cpp" />
+		<Unit filename="Yaccer.h" />
 		<Unit filename="hash.cpp" />
 		<Unit filename="hash.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="mystack.cpp" />
+		<Unit filename="mystack.h" />
 		<Unit filename="strfunction.cpp" />
 		<Unit filename="strfunction.h" />
 		<Extensions>

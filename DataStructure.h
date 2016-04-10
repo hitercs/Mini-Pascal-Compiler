@@ -3,12 +3,6 @@
 // Max length for the string
 #define MAX_LEN     512
 #define VAR_LEN     100
-#define BODY_LEN    500
-#define SHIFT   0
-#define REDUCE  1
-#define ACC     2
-#define ERROR   3
-#define EMPTY   4
 #include <string.h>
 // Key word type def
 typedef struct key_word{
@@ -34,25 +28,7 @@ typedef struct symbol{
     };
 }symbol;
 
-typedef struct Production{
-    char Header[VAR_LEN];   // Production left side
-    int num;                // number of character of right side
-    char Body[BODY_LEN];    // Production right side
-    Production()
-    {
-        memset(Header, 0, VAR_LEN*sizeof(char));
-        memset(Body, 0, BODY_LEN*sizeof(char));
-        num = 0;
-    }
-}Production;
 
-typedef struct action_ele{
-    int action;
-    int pro_num;
-    action_ele()
-    {
-        action = EMPTY; pro_num = 1;
-    }
-}action_ele;
-
+// production[VAR_LEN][0] is body size
+// production[VAR_LEN][1] is header variable
 #endif // DATASTRUCTURE_H
