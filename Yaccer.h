@@ -5,20 +5,20 @@
 #define STATUS_NUM      100
 #define TERMINAL_NUM    200
 #define VAR_NUM         200
-#define ERROR           -100000
-#define ACC             0
+#define ERROR           0
+#define ACC             -100000
 class Yaccer{
 public:
     Yaccer(const char* file_str=NULL, const char* prod_file=NULL);
     void import_production(const char* pro_str); // Read production lines
     void install_table(const char* file_str);    // install goto table and action table
-    void LR_analysis(const char* token_file);     // LR analysis
+    void LR_analysis(const char* token_file);    // LR analysis
 private:
     int GOTO[STATUS_NUM][VAR_NUM];
     // + indicate shift
     // - indicate reduce
-    // 0 is acc
-    // 100000 is error
+    // 0 is error
+    // -100000 is acc
     int ACTION[STATUS_NUM][TERMINAL_NUM];
     int production[VAR_LEN][MAX_LEN];
     MyStack<int> StatusStack;

@@ -4,11 +4,25 @@
 #include "BiBuffer.h"
 #include "Yaccer.h"
 #include "mystack.h"
-#define ENP -1
+#define ENP 0
 #define START_S 0
 using namespace std;
 Yaccer::Yaccer(const char* file_str, const char* prod_file)
 {
+    /*
+    int i, j;
+    for (i=0;i<STATUS_NUM;i++)
+    {
+        for (j=0;j<VAR_NUM;j++)
+            GOTO[i][j] = ERROR;
+    }
+    for (i=0;i<STATUS_NUM;i++)
+    {
+        for (j=0;j<TERMINAL_NUM;j++)
+            ACTION[i][j] = ERROR;
+    }*/
+    memset(GOTO, 0, STATUS_NUM*VAR_NUM*sizeof(int));
+    memset(ACTION, 0, STATUS_NUM*TERMINAL_NUM*sizeof(int));
     if (!(file_str==NULL))
     {
         install_table(file_str);
@@ -33,15 +47,23 @@ void Yaccer::install_table(const char* file_str)
     // read table size
     fscanf(fp, "%d%d%d", &status_n, &terminal_n, &var_n);
     int i, j;
+    int Terminals[TERMINAL_NUM];
+    int Vars[VAR_LEN];
+    // read terminals sign
+    for (i=0;i<terminal_n;i++)
+        fscanf(fp, "%d", &Terminals[i]);
+    // read variable sign
+    for (i=0;i<var_n;i++)
+        fscanf(fp, "%d", &Vars[i]);
     for (i=0; i<status_n;i++)
     {
         for(j=0;j<terminal_n;j++)
-            fscanf(fp, "%d", &ACTION[i][j]);
+            fscanf(fp, "%d", &ACTION[i][Terminals[j]]);
     }
     for (i=0;i<status_n;i++)
     {
         for(j=0;j<terminal_n;j++)
-            fscanf(fp, "%d", &GOTO[i][j]);
+            fscanf(fp, "%d", &GOTO[i][-Vars[j]]);
     }
 }
 void Yaccer::import_production(const char* pro_str)
@@ -70,7 +92,7 @@ void Yaccer::LR_analysis(const char* token_file)
     GrammarStack.push(ENP);
     int top_status = START_S;
     Bibuffer Words(token_file);
-    int current_word = Words.get_char(); //warning: char to int
+    int current_word = Words.get_char();        //warning: char to int Problems char !!
     int ac = ACTION[top_status][current_word];
     int reduce_num;
     while (ac != ACC)
@@ -83,7 +105,12 @@ void Yaccer::LR_analysis(const char* token_file)
             cout << "shift " << current_word << endl;
             current_word = Words.get_char();
         }
-        else if (ac < 0) // indicate reduce
+        else if (ac==ERROR)
+        {
+            cout << "error when parsing " << current_word << endl;
+            break;
+        }
+        else
         {
             // reduce with the -ac th production
             reduce_num = production[-ac][0];
@@ -94,10 +121,6 @@ void Yaccer::LR_analysis(const char* token_file)
             StatusStack.push(top_status);
             cout << "Reduce with production: " << -ac << endl;
             current_word = Words.get_char();
-        }
-        else if (ac==ERROR)
-        {
-            cout << "error when parsing" << current_word << endl;
         }
         ac = ACTION[top_status][current_word];
     }
