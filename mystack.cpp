@@ -50,7 +50,7 @@ template <class T>
 T MyStack<T>::top_ele()
 {
     if (!MyStack::is_empty())
-        return ARRAY[top];
+        return ARRAY[top-1];
 }
 template <class T>
 int MyStack<T>::npop(int n)

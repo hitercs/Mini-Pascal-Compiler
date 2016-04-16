@@ -8,7 +8,7 @@ Bibuffer::Bibuffer(const char*p)
 {
     start_p = 0;
     forward_p = BIBUFFER_SIZE-1;
-    memset(BUFFER, 0, BIBUFFER_SIZE*sizeof(char));
+    memset(BUFFER, 0, BIBUFFER_SIZE*sizeof(int));
     BUFFER[BIBUFFER_SIZE/2-1] = EOF;
     BUFFER[BIBUFFER_SIZE-1] = EOF;
     if (p != NULL)
@@ -22,16 +22,16 @@ Bibuffer::Bibuffer(const char*p)
     }
 }
 
-char Bibuffer::get_char()
+int Bibuffer::get_char()
 {
-    char tmp_c;
+    int tmp_c=EOF;
     int tmp_p;
     if (BUFFER[forward_p]==EOF)
     {
         if (forward_p == BIBUFFER_SIZE-1)
         {
             tmp_p = 0;
-            while((tmp_c = fgetc(fp)) != EOF && tmp_p != BIBUFFER_SIZE/2-1)
+            while(fscanf(fp, "%d", &tmp_c) != EOF && tmp_p != BIBUFFER_SIZE/2-1)
             {
                 BUFFER[tmp_p++] = tmp_c;
             }
@@ -42,7 +42,7 @@ char Bibuffer::get_char()
         else if (forward_p == BIBUFFER_SIZE/2-1)
         {
             tmp_p = BIBUFFER_SIZE/2;
-            while ((tmp_c = fgetc(fp)) != EOF && tmp_p != BIBUFFER_SIZE-1)
+            while (fscanf(fp, "%d", &tmp_c) != EOF && tmp_p != BIBUFFER_SIZE-1)
             {
                 BUFFER[tmp_p++] = tmp_c;
             }
@@ -53,10 +53,9 @@ char Bibuffer::get_char()
     }
     return BUFFER[forward_p++];
 }
-void Bibuffer::get_str(char* ret)
+void Bibuffer::get_str(int* ret)
 {
     int i;
     for (i = 0; i<=forward_p-start_p-1; i++)
         ret[i] = BUFFER[start_p+i];
-    ret[i] = '\0';
 }

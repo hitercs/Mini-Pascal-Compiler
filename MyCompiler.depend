@@ -42,17 +42,17 @@
 	<ctype.h>
 	"strfunction.h"
 
-1460185374 source:d:\code\mycompiler\bibuffer.cpp
+1460788799 source:d:\code\mycompiler\bibuffer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"BiBuffer.h"
 
-1460183260 d:\code\mycompiler\bibuffer.h
+1460787993 d:\code\mycompiler\bibuffer.h
 	<stdio.h>
 
-1460218393 source:d:\code\mycompiler\mystack.cpp
+1460790643 source:d:\code\mycompiler\mystack.cpp
 	"mystack.h"
 	<iostream>
 	<stdio.h>
@@ -64,7 +64,7 @@
 	"DataStructure.h"
 	"mystack.h"
 
-1460260905 source:d:\code\mycompiler\yaccer.cpp
+1460793169 source:d:\code\mycompiler\yaccer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>

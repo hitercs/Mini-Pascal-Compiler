@@ -29,7 +29,7 @@ Yaccer::Yaccer(const char* file_str, const char* prod_file)
     }
     if (!(prod_file==NULL))
     {
-        import_production(file_str);
+        import_production(prod_file);
     }
     else
         cout << "Warning: token file name is not specified" << endl;
@@ -62,13 +62,14 @@ void Yaccer::install_table(const char* file_str)
     }
     for (i=0;i<status_n;i++)
     {
-        for(j=0;j<terminal_n;j++)
+        for(j=0;j<var_n;j++)
             fscanf(fp, "%d", &GOTO[i][-Vars[j]]);
     }
 }
 void Yaccer::import_production(const char* pro_str)
 {
-    int line=0;
+    // line start 1
+    int line=1;
     int num=0;
     int i=0;
     FILE* fp = fopen(pro_str, "r");
@@ -76,7 +77,8 @@ void Yaccer::import_production(const char* pro_str)
     {
         if (num>0)
         {
-            fscanf(fp, "%d", &production[line][0]);// read production size
+            production[line][0] = num;
+            //fscanf(fp, "%d", &production[line][0]);// read production size
             fscanf(fp, "%d", &production[line][1]);// read production header
             for(i=0;i<production[line][0];i++)
             {
@@ -117,11 +119,11 @@ void Yaccer::LR_analysis(const char* token_file)
             StatusStack.npop(reduce_num);
             GrammarStack.npop(reduce_num);
             GrammarStack.push(production[-ac][1]);
-            top_status = GOTO[StatusStack.top_ele()][production[-ac][1]];
+            top_status = GOTO[StatusStack.top_ele()][-production[-ac][1]];
             StatusStack.push(top_status);
             cout << "Reduce with production: " << -ac << endl;
-            current_word = Words.get_char();
         }
+        top_status = StatusStack.top_ele();
         ac = ACTION[top_status][current_word];
     }
     if (ac==ACC)

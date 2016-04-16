@@ -5,12 +5,12 @@
 class Bibuffer{
 public:
     Bibuffer(const char*p=NULL);
-    char get_char();
-    void get_str(char *ret);
+    int get_char();
+    void get_str(int *ret);
 private:
     FILE* fp;
     int start_p;
     int forward_p;
-    char BUFFER[BIBUFFER_SIZE];
+    int BUFFER[BIBUFFER_SIZE];
 };
 #endif // BIBUFFER_H
