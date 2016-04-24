@@ -9,18 +9,6 @@
 using namespace std;
 Yaccer::Yaccer(const char* file_str, const char* prod_file)
 {
-    /*
-    int i, j;
-    for (i=0;i<STATUS_NUM;i++)
-    {
-        for (j=0;j<VAR_NUM;j++)
-            GOTO[i][j] = ERROR;
-    }
-    for (i=0;i<STATUS_NUM;i++)
-    {
-        for (j=0;j<TERMINAL_NUM;j++)
-            ACTION[i][j] = ERROR;
-    }*/
     memset(GOTO, 0, STATUS_NUM*VAR_NUM*sizeof(int));
     memset(ACTION, 0, STATUS_NUM*TERMINAL_NUM*sizeof(int));
     if (!(file_str==NULL))

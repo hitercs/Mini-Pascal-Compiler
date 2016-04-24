@@ -2,7 +2,7 @@
 #define YACCER_H
 #include "DataStructure.h"
 #include "mystack.h"
-#define STATUS_NUM      100
+#define STATUS_NUM      1000
 #define TERMINAL_NUM    200
 #define VAR_NUM         200
 #define ERROR           0

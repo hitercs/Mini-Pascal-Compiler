@@ -28,7 +28,10 @@ typedef struct symbol{
     };
 }symbol;
 
-
+typedef struct token{
+    int type;             // token type code
+    int pos;              // token position
+}token;
 // production[VAR_LEN][0] is body size
 // production[VAR_LEN][1] is header variable
 #endif // DATASTRUCTURE_H

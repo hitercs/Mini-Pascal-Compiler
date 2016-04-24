@@ -70,4 +70,9 @@
 #define USES    67
 #define OCT     68
 #define HEX     69
+#define ZMULOP  70
+#define DIG     71
+#define POS     72
+#define NEG     73
+#define NUM     74
 #endif // CODEDEF_H

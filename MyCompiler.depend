@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1459256102 source:d:\code\mycompiler\lexer.cpp
+1461509909 source:d:\code\mycompiler\lexer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
@@ -10,7 +10,7 @@
 	"DataStructure.h"
 	"CodeDef.h"
 
-1460258361 source:d:\code\mycompiler\main.cpp
+1461508928 source:d:\code\mycompiler\main.cpp
 	<iostream>
 	"Lexer.h"
 	"Yaccer.h"
@@ -24,14 +24,14 @@
 
 1459255231 d:\code\mycompiler\hash.h
 
-1459250711 d:\code\mycompiler\lexer.h
+1461509849 d:\code\mycompiler\lexer.h
 	"DataStructure.h"
 	"hash.h"
 
 1460215991 d:\code\mycompiler\datastructure.h
 	<string.h>
 
-1459173501 d:\code\mycompiler\codedef.h
+1461470379 d:\code\mycompiler\codedef.h
 
 1459254982 d:\code\mycompiler\strfunction.h
 
@@ -60,11 +60,11 @@
 
 1460217798 d:\code\mycompiler\mystack.h
 
-1460787793 d:\code\mycompiler\yaccer.h
+1461509045 d:\code\mycompiler\yaccer.h
 	"DataStructure.h"
 	"mystack.h"
 
-1460793169 source:d:\code\mycompiler\yaccer.cpp
+1461426438 source:d:\code\mycompiler\yaccer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>

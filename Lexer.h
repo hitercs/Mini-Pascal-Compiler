@@ -9,7 +9,7 @@ class Lexer
 {
 public:
     Lexer();
-    void token_analysis();
+    void token_analysis(const char* name);
 private:
     Hash<key_word> keywordTable;
     Hash<symbol> symbolTable;

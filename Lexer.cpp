@@ -351,11 +351,16 @@ void Lexer::string_identify()
     }
     start_p = forward_p;
 }
-void Lexer::token_analysis()
+void Lexer::token_analysis(const char* name)
 {
     int tmp_p = 0;
     char tmp_c;
-    fp = fopen("sample.pas", "r");
+    if (name == NULL)
+    {
+        cout << "file name is empty" << endl;
+        return;
+    }
+    fp = fopen(name, "r");
     out_fp = fopen("token.txt", "w");
     if (fp == NULL)
     {
