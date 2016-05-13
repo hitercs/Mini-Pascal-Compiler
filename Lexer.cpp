@@ -363,6 +363,7 @@ void Lexer::string_identify()
 }
 void Lexer::token_analysis(const char* name)
 {
+    printf("***************************token analysis begin****************************\n");
     int tmp_p = 0;
     char tmp_c;
     if (name == NULL)
@@ -494,6 +495,7 @@ void Lexer::token_analysis(const char* name)
         }
     }
     printf("Total line is %d\n", line);
+    printf("***************************token analysis end*****************************\n");
     fclose(fp);
     fclose(out_fp);
 }

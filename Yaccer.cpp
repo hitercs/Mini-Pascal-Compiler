@@ -4,9 +4,12 @@
 #include "BiBuffer.h"
 #include "Yaccer.h"
 #include "mystack.h"
+#include "constStrings.h"
 #define ENP 0
 #define START_S 0
 using namespace std;
+extern char pros_str[200][100];
+extern char terminals_str[200][50];
 Yaccer::Yaccer(const char* file_str, const char* prod_file)
 {
     memset(GOTO, 0, STATUS_NUM*VAR_NUM*sizeof(int));
@@ -46,7 +49,7 @@ void Yaccer::install_table(const char* file_str)
         for(j=0;j<terminal_n;j++)
             fscanf(fp, "%d", &ACTION[i][Terminals[j]]);
     }
-    printf("GOTO Table\n");
+    //printf("GOTO Table\n");
     for (i=0;i<status_n;i++)
     {
         for(j=0;j<var_n;j++)
@@ -65,22 +68,20 @@ void Yaccer::import_production(const char* pro_str)
     FILE* fp = fopen(pro_str, "r");
     while(fscanf(fp, "%d", &num)!=EOF)
     {
-        if (num>0)
+        production[line][0] = num;
+        //fscanf(fp, "%d", &production[line][0]);// read production size
+        fscanf(fp, "%d", &production[line][1]);// read production header
+        for(i=0;i<production[line][0];i++)
         {
-            production[line][0] = num;
-            //fscanf(fp, "%d", &production[line][0]);// read production size
-            fscanf(fp, "%d", &production[line][1]);// read production header
-            for(i=0;i<production[line][0];i++)
-            {
-                fscanf(fp, "%d", &production[line][i+2]);
-            }
-            //line++;
+            fscanf(fp, "%d", &production[line][i+2]);
         }
+        //line++;
         line++;
     }
 }
 void Yaccer::LR_analysis(const char* token_file)
 {
+    printf("*************************LR(1) analysis begin****************************\n");
     StatusStack.push(START_S);
     GrammarStack.push(ENP);
     int top_status = START_S;
@@ -95,7 +96,7 @@ void Yaccer::LR_analysis(const char* token_file)
             top_status = ac;
             StatusStack.push(top_status);
             GrammarStack.push(current_word.type);
-            cout << "shift " << current_word.type << endl;
+            cout << "shift: " << terminals_str[current_word.type] << endl;
             current_word = Words.get_token();
         }
         else if (ac==ERROR)
@@ -111,18 +112,19 @@ void Yaccer::LR_analysis(const char* token_file)
             StatusStack.npop(reduce_num);
             GrammarStack.npop(reduce_num);
             GrammarStack.push(production[-ac][1]);
-            printf("grammar stack top is %d\n", -production[-ac][1]);
-            printf("status stack top is %d\n",StatusStack.top_ele());
-            printf("x = %d, y = %d, GOTO[X][Y] = %d\n", StatusStack.top_ele(),-production[-ac][1],GOTO[StatusStack.top_ele()][-production[-ac][1]]);
+            //printf("grammar stack top is %d\n", -production[-ac][1]);
+            //printf("status stack top is %d\n",StatusStack.top_ele());
+            //printf("x = %d, y = %d, GOTO[X][Y] = %d\n", StatusStack.top_ele(),-production[-ac][1],GOTO[StatusStack.top_ele()][-production[-ac][1]]);
             top_status = GOTO[StatusStack.top_ele()][-production[-ac][1]];
             StatusStack.push(top_status);
-            cout << "Reduce with production: " << -ac << endl;
+            cout << "Reduce with production: " << pros_str[-ac] << endl;
         }
         top_status = StatusStack.top_ele();
         ac = ACTION[top_status][current_word.type];
     }
     if (ac==ACC)
         cout << "parsing succeeded" << endl;
+    printf("*************************LR(1) analysis end****************************\n");
     return;
 }
 
