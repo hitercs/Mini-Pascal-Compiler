@@ -2,15 +2,16 @@
 #define BIBUFFER_H
 #define BIBUFFER_SIZE   1024
 #include <stdio.h>
+#include "DataStructure.h"
 class Bibuffer{
 public:
     Bibuffer(const char*p=NULL);
-    int get_char();
-    void get_str(int *ret);
+    token get_token();
 private:
+    token error;
     FILE* fp;
     int start_p;
     int forward_p;
-    int BUFFER[BIBUFFER_SIZE];
+    token BUFFER[BIBUFFER_SIZE];
 };
 #endif // BIBUFFER_H

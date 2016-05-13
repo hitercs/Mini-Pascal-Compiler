@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1461509909 source:d:\code\mycompiler\lexer.cpp
+1462200725 source:d:\code\mycompiler\lexer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
@@ -10,7 +10,7 @@
 	"DataStructure.h"
 	"CodeDef.h"
 
-1461508928 source:d:\code\mycompiler\main.cpp
+1462200163 source:d:\code\mycompiler\main.cpp
 	<iostream>
 	"Lexer.h"
 	"Yaccer.h"
@@ -28,7 +28,7 @@
 	"DataStructure.h"
 	"hash.h"
 
-1460215991 d:\code\mycompiler\datastructure.h
+1461511067 d:\code\mycompiler\datastructure.h
 	<string.h>
 
 1461470379 d:\code\mycompiler\codedef.h
@@ -42,29 +42,30 @@
 	<ctype.h>
 	"strfunction.h"
 
-1460788799 source:d:\code\mycompiler\bibuffer.cpp
+1463065606 source:d:\code\mycompiler\bibuffer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"BiBuffer.h"
 
-1460787993 d:\code\mycompiler\bibuffer.h
+1463065579 d:\code\mycompiler\bibuffer.h
 	<stdio.h>
+	"DataStructure.h"
 
-1460790643 source:d:\code\mycompiler\mystack.cpp
+1463067240 source:d:\code\mycompiler\mystack.cpp
 	"mystack.h"
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
 
-1460217798 d:\code\mycompiler\mystack.h
+1463067036 d:\code\mycompiler\mystack.h
 
-1461509045 d:\code\mycompiler\yaccer.h
+1463068021 d:\code\mycompiler\yaccer.h
 	"DataStructure.h"
 	"mystack.h"
 
-1461426438 source:d:\code\mycompiler\yaccer.cpp
+1463110152 source:d:\code\mycompiler\yaccer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>

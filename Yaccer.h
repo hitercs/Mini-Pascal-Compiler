@@ -19,6 +19,10 @@ private:
     // - indicate reduce
     // 0 is error
     // -100000 is acc
+    //terminal code
+    int Terminals[TERMINAL_NUM];
+    //var code
+    int Vars[VAR_LEN];
     int ACTION[STATUS_NUM][TERMINAL_NUM];
     int production[VAR_LEN][MAX_LEN];
     MyStack<int> StatusStack;

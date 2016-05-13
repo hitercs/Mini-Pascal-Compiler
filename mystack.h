@@ -10,7 +10,7 @@ public:
     int is_full();
     void push(T element);
     T top_ele();
-    T pop();
+    //T top();
     int npop(int n);
 private:
     int top;

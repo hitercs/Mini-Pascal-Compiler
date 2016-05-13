@@ -1,3 +1,3 @@
-program quicksort(hello);
+program quicksort();
 begin 
 end

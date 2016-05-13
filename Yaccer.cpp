@@ -35,8 +35,6 @@ void Yaccer::install_table(const char* file_str)
     // read table size
     fscanf(fp, "%d%d%d", &status_n, &terminal_n, &var_n);
     int i, j;
-    int Terminals[TERMINAL_NUM];
-    int Vars[VAR_LEN];
     // read terminals sign
     for (i=0;i<terminal_n;i++)
         fscanf(fp, "%d", &Terminals[i]);
@@ -48,11 +46,15 @@ void Yaccer::install_table(const char* file_str)
         for(j=0;j<terminal_n;j++)
             fscanf(fp, "%d", &ACTION[i][Terminals[j]]);
     }
+    printf("GOTO Table\n");
     for (i=0;i<status_n;i++)
     {
         for(j=0;j<var_n;j++)
+        {
             fscanf(fp, "%d", &GOTO[i][-Vars[j]]);
+        }
     }
+    //printf("goto[4][2] is %d\n", GOTO[4][2]);
 }
 void Yaccer::import_production(const char* pro_str)
 {
@@ -72,8 +74,9 @@ void Yaccer::import_production(const char* pro_str)
             {
                 fscanf(fp, "%d", &production[line][i+2]);
             }
-            line++;
+            //line++;
         }
+        line++;
     }
 }
 void Yaccer::LR_analysis(const char* token_file)
@@ -82,8 +85,8 @@ void Yaccer::LR_analysis(const char* token_file)
     GrammarStack.push(ENP);
     int top_status = START_S;
     Bibuffer Words(token_file);
-    int current_word = Words.get_char();        //warning: char to int Problems char !!
-    int ac = ACTION[top_status][current_word];
+    token current_word = Words.get_token();        //warning: char to int Problems char !!
+    int ac = ACTION[top_status][current_word.type];
     int reduce_num;
     while (ac != ACC)
     {
@@ -91,28 +94,32 @@ void Yaccer::LR_analysis(const char* token_file)
         {
             top_status = ac;
             StatusStack.push(top_status);
-            GrammarStack.push(current_word);
-            cout << "shift " << current_word << endl;
-            current_word = Words.get_char();
+            GrammarStack.push(current_word.type);
+            cout << "shift " << current_word.type << endl;
+            current_word = Words.get_token();
         }
         else if (ac==ERROR)
         {
-            cout << "error when parsing " << current_word << endl;
+            cout << "error when parsing " << current_word.type << endl;
             break;
         }
         else
         {
             // reduce with the -ac th production
+            // with error
             reduce_num = production[-ac][0];
             StatusStack.npop(reduce_num);
             GrammarStack.npop(reduce_num);
             GrammarStack.push(production[-ac][1]);
+            printf("grammar stack top is %d\n", -production[-ac][1]);
+            printf("status stack top is %d\n",StatusStack.top_ele());
+            printf("x = %d, y = %d, GOTO[X][Y] = %d\n", StatusStack.top_ele(),-production[-ac][1],GOTO[StatusStack.top_ele()][-production[-ac][1]]);
             top_status = GOTO[StatusStack.top_ele()][-production[-ac][1]];
             StatusStack.push(top_status);
             cout << "Reduce with production: " << -ac << endl;
         }
         top_status = StatusStack.top_ele();
-        ac = ACTION[top_status][current_word];
+        ac = ACTION[top_status][current_word.type];
     }
     if (ac==ACC)
         cout << "parsing succeeded" << endl;

@@ -35,8 +35,9 @@ void MyStack<T>::push(T element)
         exit(1);
     }
 }
+/*
 template <class T>
-T MyStack<T>::pop()
+T MyStack<T>::top()
 {
     if (!is_empty())
         return ARRAY[--top];
@@ -46,11 +47,14 @@ T MyStack<T>::pop()
         exit(1);
     }
 }
+*/
 template <class T>
 T MyStack<T>::top_ele()
 {
     if (!MyStack::is_empty())
         return ARRAY[top-1];
+    else
+        printf("Error: Stack is empty\n");
 }
 template <class T>
 int MyStack<T>::npop(int n)

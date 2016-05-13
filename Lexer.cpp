@@ -86,6 +86,16 @@ void Lexer::operator_identify()
     char tmp_c = BUFFER[forward_p-1];
     switch (tmp_c)
     {
+    case '(':
+        printf("(%d, %c)\n", LR_BRAC, '(');
+        fprintf(out_fp, "(%d, %d)\n", LR_BRAC, 0);
+        start_p = forward_p;
+        break;
+    case ')':
+        printf("(%d, %c)\n", RR_BRAC, ')');
+        fprintf(out_fp, "(%d, %d)\n", RR_BRAC, 0);
+        start_p = forward_p;
+        break;
     case '*':
         tmp_c = BUFFER[forward_p++];
         if (tmp_c == '*')
