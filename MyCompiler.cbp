@@ -41,6 +41,7 @@
 		<Unit filename="Lexer.h" />
 		<Unit filename="Yaccer.cpp" />
 		<Unit filename="Yaccer.h" />
+		<Unit filename="constStrings.h" />
 		<Unit filename="hash.cpp" />
 		<Unit filename="hash.h" />
 		<Unit filename="main.cpp" />
