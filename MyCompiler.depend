@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1463122630 source:d:\code\mycompiler\lexer.cpp
+1463216355 source:d:\code\mycompiler\lexer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
@@ -10,25 +10,25 @@
 	"DataStructure.h"
 	"CodeDef.h"
 
-1462200163 source:d:\code\mycompiler\main.cpp
+1463216022 source:d:\code\mycompiler\main.cpp
 	<iostream>
 	"Lexer.h"
 	"Yaccer.h"
 
-1459256266 source:d:\code\mycompiler\hash.cpp
+1463215079 source:d:\code\mycompiler\hash.cpp
 	<iostream>
 	<string.h>
 	"hash.h"
 	"DataStructure.h"
 	"strfunction.h"
 
-1459255231 d:\code\mycompiler\hash.h
+1463214801 d:\code\mycompiler\hash.h
 
-1461509849 d:\code\mycompiler\lexer.h
+1463214703 d:\code\mycompiler\lexer.h
 	"DataStructure.h"
 	"hash.h"
 
-1461511067 d:\code\mycompiler\datastructure.h
+1463216516 d:\code\mycompiler\datastructure.h
 	<string.h>
 
 1461470379 d:\code\mycompiler\codedef.h
@@ -42,7 +42,7 @@
 	<ctype.h>
 	"strfunction.h"
 
-1463065606 source:d:\code\mycompiler\bibuffer.cpp
+1463216652 source:d:\code\mycompiler\bibuffer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>

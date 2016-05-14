@@ -60,10 +60,15 @@ void Lexer::id_identify()
         tmp_s.type = type;
         // insert to the symbol
         symbolTable.insert_element(tmp_s);
+        fprintf(out_fp, "(%d, %d, %d)\n", type, symbolTable.xpos, symbolTable.ypos);
+    }
+    else
+    {
+        fprintf(out_fp, "(%d, %d, %d)\n", type, -1, -1);
     }
     // output
     printf("(%d, %s)\n", type, tmp_token);
-    fprintf(out_fp, "(%d, %d)\n", type, symbolTable.rpos);
+    //fprintf(out_fp, "(%d, %d, %d)\n", type, symbolTable.xpos, symbolTable.ypos);
     start_p = forward_p;
 }
 void Lexer::set_keyword()
@@ -88,12 +93,12 @@ void Lexer::operator_identify()
     {
     case '(':
         printf("(%d, %c)\n", LR_BRAC, '(');
-        fprintf(out_fp, "(%d, %d)\n", LR_BRAC, 0);
+        fprintf(out_fp, "(%d, %d, %d)\n", LR_BRAC, -1, -1);
         start_p = forward_p;
         break;
     case ')':
         printf("(%d, %c)\n", RR_BRAC, ')');
-        fprintf(out_fp, "(%d, %d)\n", RR_BRAC, 0);
+        fprintf(out_fp, "(%d, %d, %d)\n", RR_BRAC, -1, -1);
         start_p = forward_p;
         break;
     case '*':
@@ -101,13 +106,13 @@ void Lexer::operator_identify()
         if (tmp_c == '*')
         {
             printf("(%d, %s)\n", EXP, "**");
-            fprintf(out_fp, "(%d, %d)\n", EXP, 0);
+            fprintf(out_fp, "(%d, %d, %d)\n", EXP, -1, -1);
         }
         else
         {
             printf("(%d, %c)\n", MULTI, '*');
             back_nsteps(1);
-            fprintf(out_fp, "(%d, %d)\n", MULTI, 0);
+            fprintf(out_fp, "(%d, %d, %d)\n", MULTI, -1, -1);
         }
         start_p = forward_p;
         break;
@@ -116,12 +121,12 @@ void Lexer::operator_identify()
         if (tmp_c == '=')
         {
             printf("(%d, %s)\n", ASSIGN, ":=");
-            fprintf(out_fp, "(%d, %d)\n", ASSIGN, 0);
+            fprintf(out_fp, "(%d, %d, %d)\n", ASSIGN, -1, -1);
         }
         else
         {
             printf("(%d, %c)\n", COLON, ':');
-            fprintf(out_fp, "(%d, %d)\n", COLON, 0);
+            fprintf(out_fp, "(%d, %d, %d)\n", COLON, -1, -1);
             back_nsteps(1);
         }
         start_p = forward_p;
@@ -131,24 +136,24 @@ void Lexer::operator_identify()
         if (tmp_c == '=')
         {
             printf("(%d, %s)\n", LE, "<=");
-            fprintf(out_fp, "(%d, %d)\n", LE, 0);
+            fprintf(out_fp, "(%d, %d, %d)\n", LE, -1, -1);
         }
         else if (tmp_c == '>')
         {
             printf("(%d, %s)\n", NE, "<>");
-            fprintf(out_fp, "(%d, %d)\n", NE, 0);
+            fprintf(out_fp, "(%d, %d, %d)\n", NE, -1, -1);
         }
         else
         {
             printf("(%d, %c)\n", LT, '<');
-            fprintf(out_fp, "(%d, %d)\n", LT, 0);
+            fprintf(out_fp, "(%d, %d, %d)\n", LT, -1, -1);
             back_nsteps(1);
         }
         start_p = forward_p;
         break;
     case '=':
         printf("(%d, %c)\n", EQ, '=');
-        fprintf(out_fp, "(%d, %d)\n", EQ, 0);
+        fprintf(out_fp, "(%d, %d, %d)\n", EQ, -1, -1);
         start_p = forward_p;
         break;
     case '>':
@@ -156,39 +161,39 @@ void Lexer::operator_identify()
         if (tmp_c == '=')
         {
             printf("(%d, %s)", GE, ">=s");
-            fprintf(out_fp, "(%d, %d)\n", GE, 0);
+            fprintf(out_fp, "(%d, %d, %d)\n", GE, -1, -1);
         }
         else
         {
             printf("(%d, %c)", GT, '>');
             back_nsteps(1);
-            fprintf(out_fp, "(%d, %d)\n", GT, 0);
+            fprintf(out_fp, "(%d, %d, %d)\n", GT, -1, -1);
         }
         start_p = forward_p;
         break;
     case '+':
         printf("(%d, %c)", PLUS, '+');
-        fprintf(out_fp, "(%d, %d)\n", PLUS, 0);
+        fprintf(out_fp, "(%d, %d, %d)\n", PLUS, -1, -1);
         start_p = forward_p;
         break;
     case '-':
         printf("(%d, %c)\n", MINUS, '-');
-        fprintf(out_fp, "(%d, %d)\n", MINUS, 0);
+        fprintf(out_fp, "(%d, %d, %d)\n", MINUS, -1, -1);
         start_p = forward_p;
         break;
     case ',':
         printf("(%d, %c)\n", COMMA, ',');
-        fprintf(out_fp, "(%d, %d)\n", COMMA, 0);
+        fprintf(out_fp, "(%d, %d, %d)\n", COMMA, -1, -1);
         start_p = forward_p;
         break;
     case ';':
         printf("(%d, %c)\n", SEMIC, ';');
-        fprintf(out_fp, "(%d, %d)\n", SEMIC, 0);
+        fprintf(out_fp, "(%d, %d, %d)\n", SEMIC, -1, -1);
         start_p = forward_p;
         break;
     case '.':
         printf("(%d, %c)\n", F_STOP, '.');
-        fprintf(out_fp, "(%d, %d)\n", F_STOP, 0);
+        fprintf(out_fp, "(%d, %d, %d)\n", F_STOP, -1, -1);
         start_p = forward_p;
         break;
     default:
@@ -255,7 +260,7 @@ void Lexer::real_identify()
     get_token();
     printf("(%d, %s)\n", type, tmp_token);
     // digits are not saved in the table
-    fprintf(out_fp, "(%d, %d)\n", type, -1);
+    fprintf(out_fp, "(%d, %d, %d)\n", type, -1, -1);
     start_p = forward_p;
 }
 void Lexer::decimal_identify()
@@ -268,7 +273,7 @@ void Lexer::decimal_identify()
     get_token();
     printf("(%d, %s)\n", type, tmp_token);
     // digits are not saved in the table
-    fprintf(out_fp, "(%d, %d)\n", type, -1);
+    fprintf(out_fp, "(%d, %d, %d)\n", type, -1, -1);
     start_p = forward_p;
 }
 void Lexer::oct_identify()
@@ -281,7 +286,7 @@ void Lexer::oct_identify()
     get_token();
     printf("(%d, %s)\n", type, tmp_token);
     // digits are not saved in the table
-    fprintf(out_fp, "(%d, %d)\n", type, -1);
+    fprintf(out_fp, "(%d, %d, %d)\n", type, -1, -1);
     start_p = forward_p;
 }
 void Lexer::hex_identify()
@@ -294,7 +299,7 @@ void Lexer::hex_identify()
     get_token();
     printf("(%d, %s)\n", type, tmp_token);
     // digits are not saved in the table
-    fprintf(out_fp, "(%d, %d)\n", type, -1);
+    fprintf(out_fp, "(%d, %d, %d)\n", type, -1, -1);
     start_p = forward_p;
 }
 void Lexer::digits_identify()
@@ -353,7 +358,7 @@ void Lexer::string_identify()
         get_token();
         printf("(%d, %s)\n", STRING, tmp_token);
         // not save string to the table
-        fprintf(out_fp, "(%d, %d)\n", STRING, -1);
+        fprintf(out_fp, "(%d, %d, %d)\n", STRING, -1, -1);
     }
     else
     {

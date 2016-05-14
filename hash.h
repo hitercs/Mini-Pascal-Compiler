@@ -8,7 +8,8 @@ public:
     void insert_element(T element);
     T* search_element(char* key);
     int delete_element(const char* key);
-    int rpos;
+    int xpos;
+    int ypos;
 private:
     T* Array[BUCKET_SIZE];
 };

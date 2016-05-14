@@ -23,22 +23,25 @@ template <class T>
 Hash<T>::Hash()
 {
     memset(Array, 0, BUCKET_SIZE*sizeof(T*));
-    rpos = 0;
+    xpos = 0; ypos = 0;
 }
 template <class T>
 void Hash<T>::insert_element(T element)
 {
+    //location(xpos, ypos)
     str2upper(element.name);
     int pos = SDBMHash(element.name);
     T* ptr = Array[pos];
     T* p = new T;
     *p = element;
-    rpos = pos;
+    xpos = pos;
+    int counter = 0;
     if (ptr)
     {
         while(ptr->next)
         {
             ptr = ptr->next;
+            counter++;
         }
         ptr->next = p;
     }
@@ -46,6 +49,7 @@ void Hash<T>::insert_element(T element)
     {
         Array[pos] = p;
     }
+    ypos = counter;
 }
 template <class T>
 T* Hash<T>::search_element(char* key)
@@ -63,7 +67,8 @@ T* Hash<T>::search_element(char* key)
         }
         if (p)
         {
-            rpos = pos;
+            xpos = pos;
+            ypos = i;
             return p;
         }
     }

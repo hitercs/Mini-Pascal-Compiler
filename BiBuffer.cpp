@@ -11,7 +11,8 @@ Bibuffer::Bibuffer(const char*p)
     memset(BUFFER, 0, BIBUFFER_SIZE*sizeof(token));
     BUFFER[BIBUFFER_SIZE/2-1].type = EOF;
     BUFFER[BIBUFFER_SIZE-1].type = EOF;
-    error.pos = -1; error.type = -1;
+    error.xpos = -1; error.type = -1;
+    error.ypos = -1;
     if (p != NULL)
     {
         fp = fopen(p, "r");
@@ -33,7 +34,7 @@ token Bibuffer::get_token()
         if (forward_p == BIBUFFER_SIZE-1)
         {
             tmp_p = 0;
-            while(fscanf(fp, "(%d, %d)\n", &tmp_c.type, &tmp_c.pos) != EOF && tmp_p != BIBUFFER_SIZE/2-1)
+            while(fscanf(fp, "(%d, %d, %d)\n", &tmp_c.type, &tmp_c.xpos, &tmp_c.ypos) != EOF && tmp_p != BIBUFFER_SIZE/2-1)
             {
                 BUFFER[tmp_p++] = tmp_c;
             }
@@ -44,7 +45,7 @@ token Bibuffer::get_token()
         else if (forward_p == BIBUFFER_SIZE/2-1)
         {
             tmp_p = BIBUFFER_SIZE/2;
-            while (fscanf(fp, "(%d, %d)\n", &tmp_c.type, &tmp_c.pos) != EOF && tmp_p != BIBUFFER_SIZE-1)
+            while (fscanf(fp, "(%d, %d, %d)\n", &tmp_c.type, &tmp_c.xpos, &tmp_c.ypos) != EOF && tmp_p != BIBUFFER_SIZE-1)
             {
                 BUFFER[tmp_p++] = tmp_c;
             }
