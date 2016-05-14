@@ -52,6 +52,16 @@ void Hash<T>::insert_element(T element)
     ypos = counter;
 }
 template <class T>
+T* Hash<T>::search_by_postion(int x, int y)
+{
+    T* ptr = Array[x];
+    for (int i=0; i<y; i++)
+    {
+        ptr = ptr->next;
+    }
+    return ptr;
+}
+template <class T>
 T* Hash<T>::search_element(char* key)
 {
     str2upper(key);

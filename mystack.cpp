@@ -1,7 +1,9 @@
 #include "mystack.h"
+#include "DataStructure.h"
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include "attributes.h"
 using namespace std;
 template <class T>
 MyStack<T>::MyStack()
@@ -35,19 +37,7 @@ void MyStack<T>::push(T element)
         exit(1);
     }
 }
-/*
-template <class T>
-T MyStack<T>::top()
-{
-    if (!is_empty())
-        return ARRAY[--top];
-    else
-    {
-        cout << "Error: Stack is empty" << endl;
-        exit(1);
-    }
-}
-*/
+
 template <class T>
 T MyStack<T>::top_ele()
 {
@@ -68,3 +58,4 @@ int MyStack<T>::npop(int n)
         return -1;
 }
 template class MyStack<int>;
+template class MyStack<Attributes>;

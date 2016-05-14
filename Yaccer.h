@@ -2,6 +2,7 @@
 #define YACCER_H
 #include "DataStructure.h"
 #include "mystack.h"
+#include "attributes.h"
 #define STATUS_NUM      1000
 #define TERMINAL_NUM    200
 #define VAR_NUM         200
@@ -27,5 +28,7 @@ private:
     int production[VAR_LEN][MAX_LEN];
     MyStack<int> StatusStack;
     MyStack<int> GrammarStack;
+    //attributes stacks
+    MyStack<Attributes> AttributeStack;
 };
 #endif // YACCER_H

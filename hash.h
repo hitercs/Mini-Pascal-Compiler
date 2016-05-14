@@ -8,6 +8,7 @@ public:
     void insert_element(T element);
     T* search_element(char* key);
     int delete_element(const char* key);
+    T* search_by_postion(int x, int y);
     int xpos;
     int ypos;
 private:

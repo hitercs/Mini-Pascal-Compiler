@@ -17,6 +17,7 @@ Lexer::Lexer()
     tmp_token[0] = '\0';
     forward_p = BUFFER_SIZE-1;
     start_p = 0;
+    int_n = 0; float_n = 0; string_n = 0;
 }
 inline int Lexer::is_blank(char c)
 {
@@ -258,9 +259,10 @@ void Lexer::real_identify()
     }
     back_nsteps(1);
     get_token();
+    fprintf(out_fp, "(%d, %d, %d)\n", type, float_n, -1);
+    float_consts[float_n++] = atof(tmp_token);
     printf("(%d, %s)\n", type, tmp_token);
     // digits are not saved in the table
-    fprintf(out_fp, "(%d, %d, %d)\n", type, -1, -1);
     start_p = forward_p;
 }
 void Lexer::decimal_identify()
@@ -271,9 +273,10 @@ void Lexer::decimal_identify()
         tmp_c = BUFFER[forward_p++];
     back_nsteps(1);
     get_token();
+    fprintf(out_fp, "(%d, %d, %d)\n", type, int_n, -1);
+    int_consts[int_n++] = atoi(tmp_token);
     printf("(%d, %s)\n", type, tmp_token);
     // digits are not saved in the table
-    fprintf(out_fp, "(%d, %d, %d)\n", type, -1, -1);
     start_p = forward_p;
 }
 void Lexer::oct_identify()
@@ -284,9 +287,9 @@ void Lexer::oct_identify()
         tmp_c = BUFFER[forward_p++];
     back_nsteps(1);
     get_token();
+    fprintf(out_fp, "(%d, %d, %d)\n", type, int_n, -1);
+    int_consts[int_n++] = atoi(tmp_token);
     printf("(%d, %s)\n", type, tmp_token);
-    // digits are not saved in the table
-    fprintf(out_fp, "(%d, %d, %d)\n", type, -1, -1);
     start_p = forward_p;
 }
 void Lexer::hex_identify()
@@ -297,9 +300,10 @@ void Lexer::hex_identify()
         tmp_c = BUFFER[forward_p++];
     back_nsteps(1);
     get_token();
+    fprintf(out_fp, "(%d, %d, %d)\n", type, int_n, -1);
+    int_consts[int_n++] = atoi(tmp_token);
     printf("(%d, %s)\n", type, tmp_token);
     // digits are not saved in the table
-    fprintf(out_fp, "(%d, %d, %d)\n", type, -1, -1);
     start_p = forward_p;
 }
 void Lexer::digits_identify()
@@ -357,14 +361,20 @@ void Lexer::string_identify()
     {
         get_token();
         printf("(%d, %s)\n", STRING, tmp_token);
-        // not save string to the table
-        fprintf(out_fp, "(%d, %d, %d)\n", STRING, -1, -1);
+        // save string to the table
+        fprintf(out_fp, "(%d, %d, %d)\n", STRING, string_n, -1);
+        strcpy(string_consts[string_n++], tmp_token);
     }
     else
     {
         printf("Syntax error:at %d line, String not closed.\n", line);
     }
     start_p = forward_p;
+}
+symbol* Lexer::search_symbols(int xpos, int ypos)
+{
+    symbol* ptr = symbolTable.search_by_postion(xpos, ypos);
+    return ptr;
 }
 void Lexer::token_analysis(const char* name)
 {

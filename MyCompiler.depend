@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1463216355 source:d:\code\mycompiler\lexer.cpp
+1463225911 source:d:\code\mycompiler\lexer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
@@ -10,25 +10,25 @@
 	"DataStructure.h"
 	"CodeDef.h"
 
-1463216022 source:d:\code\mycompiler\main.cpp
+1463226256 source:d:\code\mycompiler\main.cpp
 	<iostream>
 	"Lexer.h"
 	"Yaccer.h"
 
-1463215079 source:d:\code\mycompiler\hash.cpp
+1463228201 source:d:\code\mycompiler\hash.cpp
 	<iostream>
 	<string.h>
 	"hash.h"
 	"DataStructure.h"
 	"strfunction.h"
 
-1463214801 d:\code\mycompiler\hash.h
+1463222532 d:\code\mycompiler\hash.h
 
-1463214703 d:\code\mycompiler\lexer.h
+1463225698 d:\code\mycompiler\lexer.h
 	"DataStructure.h"
 	"hash.h"
 
-1463216516 d:\code\mycompiler\datastructure.h
+1463228661 d:\code\mycompiler\datastructure.h
 	<string.h>
 
 1461470379 d:\code\mycompiler\codedef.h
@@ -53,17 +53,19 @@
 	<stdio.h>
 	"DataStructure.h"
 
-1463067240 source:d:\code\mycompiler\mystack.cpp
+1463231056 source:d:\code\mycompiler\mystack.cpp
 	"mystack.h"
+	"DataStructure.h"
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
 
 1463067036 d:\code\mycompiler\mystack.h
 
-1463068021 d:\code\mycompiler\yaccer.h
+1463234314 d:\code\mycompiler\yaccer.h
 	"DataStructure.h"
 	"mystack.h"
+	"attributes.h"
 
 1463122595 source:d:\code\mycompiler\yaccer.cpp
 	<iostream>
@@ -75,4 +77,15 @@
 	"constStrings.h"
 
 1463121954 d:\code\mycompiler\conststrings.h
+
+1463234091 source:d:\code\mycompiler\attributes.cpp
+	"attributes.h"
+	"CodeDef.h"
+	"stdlib.h"
+	"string.h"
+	"DataStructure.h"
+	<iostream>
+
+1463233917 d:\code\mycompiler\attributes.h
+	"DataStructure.h"
 

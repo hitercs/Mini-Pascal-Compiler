@@ -10,6 +10,11 @@ class Lexer
 public:
     Lexer();
     void token_analysis(const char* name);
+    symbol* search_symbols(int xpos, int ypos);
+    //consts tables
+    int int_consts[INT_SIZE];
+    float float_consts[FLOAT_SIZE];
+    char string_consts[STRING_SIZE][MAX_LEN];
 private:
     Hash<key_word> keywordTable;
     Hash<symbol> symbolTable;
@@ -31,5 +36,6 @@ private:
     char tmp_token[maxlen];
     int line;
     int start_p, forward_p;
+    int float_n; int int_n; int string_n;
 };
 #endif // LEXER_H
