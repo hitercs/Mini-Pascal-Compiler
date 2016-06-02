@@ -18,9 +18,10 @@ public:
     void install_table(const char* file_str);    // install goto table and action table
     void LR_analysis(const char* token_file);    // LR analysis
 private:
+    HierachSymbols* mktable(HierachSymbols* fa_ptr);
     Lexer lex;
 
-    int GOTO[STATUS_NUM][VAR_NUM];
+    int GOTO_TABLE[STATUS_NUM][VAR_NUM];
     // + indicate shift
     // - indicate reduce
     // 0 is error
@@ -31,12 +32,11 @@ private:
     int Vars[VAR_LEN];
     int ACTION[STATUS_NUM][TERMINAL_NUM];
     int production[VAR_LEN][MAX_LEN];
+    int current_level;
     MyStack<int> StatusStack;
     //MyStack<int> GrammarStack;
     MyStack<int> offset;
     MyStack<HierachSymbols*> tblptr;
-    //attributes stacks
-    //MyStack<Attributes*> AttrStack;
     MyStack<GraAttrNode> GraAttrStack;
 };
 #endif // YACCER_H

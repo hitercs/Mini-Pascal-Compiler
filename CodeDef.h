@@ -26,7 +26,7 @@
 #define PACKED 23
 #define PROC   24
 #define PROG   25
-#define RECORD I
+#define RECORD 26
 #define REPEAT 27
 #define SET    28
 #define THEN   29

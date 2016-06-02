@@ -67,5 +67,11 @@ typedef struct HierachSymbols{
         HierachSymbols* child;
     }SymTailRecord;
     SymTailRecord childs[MAX_CHILD_N];
+    HierachSymbols()
+    {
+        father = NULL;
+        for (int i=0;i<MAX_CHILD_N;i++)
+            childs[i].child = NULL;
+    }
 }HierachSymbols;
 #endif // DATASTRUCTURE_H

@@ -10,10 +10,12 @@ public:
     int is_full();
     void push(T element);
     T top_ele();
+    T top_ele_by_off(int offset);
     //T top();
     int npop(int n);
-private:
+    T ARRAY_[STACK_SIZE];
     int top;
-    T ARRAY[STACK_SIZE];
+private:
+
 };
 #endif // MYSTACK_H

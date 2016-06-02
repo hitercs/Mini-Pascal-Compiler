@@ -30,7 +30,7 @@ template <class T>
 void MyStack<T>::push(T element)
 {
     if (!is_full())
-        ARRAY[top++] = element;
+        ARRAY_[top++] = element;
     else
     {
         cout << "Error: Stack is full\n" << endl;
@@ -42,7 +42,7 @@ template <class T>
 T MyStack<T>::top_ele()
 {
     if (!MyStack::is_empty())
-        return ARRAY[top-1];
+        return ARRAY_[top-1];
     else
         printf("Error: Stack is empty\n");
 }
@@ -56,6 +56,22 @@ int MyStack<T>::npop(int n)
     }
     else
         return -1;
+}
+template <class T>
+T MyStack<T>::top_ele_by_off(int offset)
+{
+    // offset is negative
+    if (offset <= 0)
+    {
+        if (top+offset-1>=0)
+            return ARRAY_[top+offset-1];
+        else
+            printf("Error: top_ele_by_off: Stack reach bottom\n");
+    }
+    else
+    {
+        printf("Error: offset is positive!!\n");
+    }
 }
 template class MyStack<int>;
 template class MyStack<Attributes*>;
