@@ -77,3 +77,4 @@ template class MyStack<int>;
 template class MyStack<Attributes*>;
 template class MyStack<HierachSymbols*>;
 template class MyStack<GraAttrNode>;
+template class MyStack<GraAttrNode*>;

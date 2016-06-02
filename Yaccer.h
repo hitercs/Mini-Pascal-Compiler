@@ -19,6 +19,9 @@ public:
     void LR_analysis(const char* token_file);    // LR analysis
 private:
     HierachSymbols* mktable(HierachSymbols* fa_ptr);
+    void enter(HierachSymbols* ptr, char str[], int t, int off);
+    void addwidth(HierachSymbols* ptr, int w);
+    void enterproc(HierachSymbols* ptr, char name[], HierachSymbols* child);
     Lexer lex;
 
     int GOTO_TABLE[STATUS_NUM][VAR_NUM];

@@ -100,6 +100,50 @@ HierachSymbols* Yaccer::mktable(HierachSymbols* fa_ptr)
     newTable->header.level = current_level;
     return newTable;
 }
+void Yaccer::enter(HierachSymbols* ptr, char str[], int t, int off)
+{
+    if (ptr)
+    {
+        symbol tmp_s;
+        strcpy(tmp_s.name, str);
+        tmp_s.type = t;
+        tmp_s.addr = off;
+        ptr->body.insert_element(tmp_s);
+    }
+    else
+    {
+        printf("Error: ptr is null!\n");
+    }
+}
+void Yaccer::addwidth(HierachSymbols* ptr, int w)
+{
+    if (ptr)
+    {
+        ptr->header.total_varsize = w;
+    }
+    else
+        printf("Error: ptr is null!\n");
+}
+void Yaccer::enterproc(HierachSymbols* ptr, char name[], HierachSymbols* child)
+{
+    if (ptr == NULL)
+        return;
+    int i;
+    for (i=0; i<MAX_CHILD_N; i++)
+    {
+        if (ptr->childs[i].child == NULL)
+            break;
+    }
+    if (ptr->childs[i].child == NULL)
+    {
+        strcpy(ptr->childs[i].childname, name);
+        ptr->childs[i].child = child;
+    }
+    else
+    {
+        printf("Symbol table childs full\n");
+    }
+}
 //--------------------------------------------
 void Yaccer::LR_analysis(const char* token_file)
 {
@@ -119,6 +163,7 @@ void Yaccer::LR_analysis(const char* token_file)
     int ac = ACTION[top_status][current_word.type];
     int reduce_num;
     HierachSymbols* newTable;
+    MyStack<GraAttrNode> ID_STACK;
     while (ac != ACC)
     {
         if (ac > 0) // indicate shift
@@ -142,6 +187,11 @@ void Yaccer::LR_analysis(const char* token_file)
             {
                 strcpy(tmp_str, lex.string_consts[current_word.xpos]);
                 newNode.attr_ptr->set_attr("var", STRING, tmp_str);
+            }
+            else if (current_word.type == ID)
+            {
+                strcpy(tmp_str, lex.search_symbols(current_word.xpos, current_word.ypos)->name);
+                newNode.attr_ptr->set_attr("name", STRING, tmp_str);
             }
             GraAttrStack.push(newNode);
             //GrammarStack.push(current_word.type);
@@ -194,8 +244,76 @@ void Yaccer::LR_analysis(const char* token_file)
                     newNode.attr_ptr->set_attr("type", INT, &tmp_int);
                     break;
                 }
-
-
+            case 18:
+                // 用产生式 type -> standard_type 来规约时，进行属性传递
+                {
+                    int width = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("width")->var_p));
+                    int type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
+                    newNode.attr_ptr->set_attr("width", INT, &width);
+                    newNode.attr_ptr->set_attr("type", INT, &type);
+                    break;
+                }
+            case 4:
+                // 用产生式 identifier_list -> id 来规约时，保存id 到ID 栈当中
+                {
+                    ID_STACK.push(GraAttrStack.top_ele());
+                    break;
+                }
+            case 16:
+                // 用产生式 identifier_list -> identifier_list, id 来规约时，保存id 到ID 栈当中
+                {
+                    ID_STACK.push(GraAttrStack.top_ele());
+                    break;
+                }
+            case 17:
+                // 用产生式 declaration -> identifier_list : type 来规约时，填符号表
+                {
+                    HierachSymbols* current_tb = tblptr.top_ele();
+                    int type, width;
+                    while(!ID_STACK.is_empty())
+                    {
+                        type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
+                        width = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("width")->var_p));
+                        enter(current_tb, (char*)((ID_STACK.top_ele().attr_ptr)->search_attr("name")->var_p), type, offset.top_ele());
+                        width += offset.top_ele();
+                        offset.npop(1);
+                        offset.push(width);
+                        ID_STACK.npop(1);
+                    }
+                    break;
+                }
+             case 36:
+                // 用产生式declaration -> declaration semi identifier_list : type 来规约时，填符号表
+                {
+                    HierachSymbols* current_tb = tblptr.top_ele();
+                    int type, width;
+                    while(!ID_STACK.is_empty())
+                    {
+                        type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
+                        width = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("width")->var_p));
+                        enter(current_tb, (char*)((ID_STACK.top_ele().attr_ptr)->search_attr("name")->var_p), type, offset.top_ele());
+                        width += offset.top_ele();
+                        offset.npop(1);
+                        offset.push(width);
+                        ID_STACK.npop(1);
+                    }
+                    break;
+                }
+             case 21:
+                //用产生式 subprogram_declaration -> subprogram_head declarations compound_statement 来规约，回填符号表头
+                {
+                    HierachSymbols* current_tb = tblptr.top_ele();
+                    addwidth(current_tb, offset.top_ele());
+                    tblptr.npop(1);
+                    offset.npop(1);
+                    //xx 应该替换成 subprogram_head.name
+                    if (tblptr.is_empty())
+                        enterproc(NULL, "xx", current_tb);
+                    else
+                        enterproc(tblptr.top_ele(), "xx", current_tb);
+                    current_level--;
+                    break;
+                }
             }
             reduce_num = production[-ac][0];
             StatusStack.npop(reduce_num);

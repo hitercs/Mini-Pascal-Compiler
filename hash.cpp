@@ -26,6 +26,7 @@ Hash<T>::Hash()
     xpos = 0; ypos = 0;
 }
 template <class T>
+// 没有对重复性检测
 void Hash<T>::insert_element(T element)
 {
     //location(xpos, ypos)
