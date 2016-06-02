@@ -6,7 +6,9 @@
 #define INT_SIZE    200
 #define FLOAT_SIZE  200
 #define STRING_SIZE 200
+#define MAX_CHILD_N 20 // ×î´óÇ¶Ì×²ãÊý
 #include <string.h>
+#include "hash.h"
 // Key word type def
 typedef struct key_word{
     char name[MAX_LEN];
@@ -54,4 +56,24 @@ typedef struct threeAddrCode{
     int arg2_addr;
     int result_addr;
 }threeAddrCode;
+typedef struct SymHeader{
+    int level;
+    int total_varsize;
+    SymHeader()
+    {
+        level = -1;
+        total_varsize = 0;
+    }
+}SymHeader;
+typedef struct HierachSymbols{
+    SymHeader header;
+    Hash<symbol> body;
+    HierachSymbols* father;
+    typedef struct SymTailRecord{
+        char childname[MAX_LEN];
+        HierachSymbols* child;
+    }SymTailRecord;
+    SymTailRecord childs[MAX_CHILD_N];
+}HierachSymbols;
+
 #endif // DATASTRUCTURE_H

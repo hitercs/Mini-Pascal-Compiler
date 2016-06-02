@@ -10,7 +10,7 @@
 	"DataStructure.h"
 	"CodeDef.h"
 
-1464839058 source:d:\code\mycompiler\main.cpp
+1464854986 source:d:\code\mycompiler\main.cpp
 	<iostream>
 	"Lexer.h"
 	"Yaccer.h"
@@ -28,8 +28,9 @@
 	"DataStructure.h"
 	"hash.h"
 
-1464837561 d:\code\mycompiler\datastructure.h
+1464853725 d:\code\mycompiler\datastructure.h
 	<string.h>
+	"hash.h"
 
 1461470379 d:\code\mycompiler\codedef.h
 
@@ -63,12 +64,14 @@
 
 1463067036 d:\code\mycompiler\mystack.h
 
-1463234314 d:\code\mycompiler\yaccer.h
+1464855340 d:\code\mycompiler\yaccer.h
+	<Stack>
 	"DataStructure.h"
 	"mystack.h"
 	"attributes.h"
+	"Lexer.h"
 
-1464839181 source:d:\code\mycompiler\yaccer.cpp
+1464854973 source:d:\code\mycompiler\yaccer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>

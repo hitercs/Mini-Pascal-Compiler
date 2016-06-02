@@ -10,10 +10,11 @@
 using namespace std;
 extern char pros_str[200][100];
 extern char terminals_str[200][50];
-Yaccer::Yaccer(const char* file_str, const char* prod_file)
+Yaccer::Yaccer(Lexer& fromlex, const char* file_str, const char* prod_file)
 {
     memset(GOTO, 0, STATUS_NUM*VAR_NUM*sizeof(int));
     memset(ACTION, 0, STATUS_NUM*TERMINAL_NUM*sizeof(int));
+    lex = fromlex;
     if (!(file_str==NULL))
     {
         install_table(file_str);
