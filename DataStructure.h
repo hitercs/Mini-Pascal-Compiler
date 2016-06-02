@@ -48,4 +48,10 @@ typedef struct attr_node{
         next = NULL; var_p = NULL; name = NULL;
     }
 }attr_node;
+typedef struct threeAddrCode{
+    int op;
+    int arg1_addr;  //操作数在符号表中的位置
+    int arg2_addr;
+    int result_addr;
+}threeAddrCode;
 #endif // DATASTRUCTURE_H

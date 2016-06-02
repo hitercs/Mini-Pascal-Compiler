@@ -193,8 +193,28 @@ void Lexer::operator_identify()
         start_p = forward_p;
         break;
     case '.':
-        printf("(%d, %c)\n", F_STOP, '.');
-        fprintf(out_fp, "(%d, %d, %d)\n", F_STOP, -1, -1);
+        //....
+        if (BUFFER[forward_p] == '.')
+        {
+            printf("(%d, %s)\n", RANGE, "..");
+            fprintf(out_fp, "(%d, %d, %d)\n", RANGE, -1, -1);
+            start_p = ++forward_p;
+        }
+        else
+        {
+            printf("(%d, %c)\n", F_STOP, '.');
+            fprintf(out_fp, "(%d, %d, %d)\n", F_STOP, -1, -1);
+            start_p = forward_p;
+        }
+        break;
+    case '[':
+        printf("(%d, %c)\n", LS_BRAC, '[');
+        fprintf(out_fp, "(%d, %d, %d)\n", LS_BRAC, -1, -1);
+        start_p = forward_p;
+        break;
+    case ']':
+        printf("(%d, %c)\n", RS_BRAC, ']');
+        fprintf(out_fp, "(%d, %d, %d)\n", RS_BRAC, -1, -1);
         start_p = forward_p;
         break;
     default:
@@ -244,6 +264,13 @@ void Lexer::real_identify()
     if (tmp_c == '.')
     {
         tmp_c = BUFFER[forward_p++];
+        if (tmp_c == '.')
+        {
+            printf("(%d, %s)\n", RANGE, "..");
+            fprintf(out_fp, "(%d, %d, %d)\n", RANGE, -1, -1);
+            start_p = forward_p;
+            return;
+        }
         while(isdigit(tmp_c))
             tmp_c = BUFFER[forward_p++];
     }
@@ -268,10 +295,10 @@ void Lexer::real_identify()
 void Lexer::decimal_identify()
 {
     int type = INT;
-    char tmp_c = BUFFER[forward_p++];
+    char tmp_c = BUFFER[forward_p];
     while (isdigit(tmp_c))
-        tmp_c = BUFFER[forward_p++];
-    back_nsteps(1);
+        tmp_c = BUFFER[++forward_p];
+    //back_nsteps(1);
     get_token();
     fprintf(out_fp, "(%d, %d, %d)\n", type, int_n, -1);
     int_consts[int_n++] = atoi(tmp_token);
@@ -311,10 +338,20 @@ void Lexer::digits_identify()
     char tmp_c = BUFFER[forward_p-1];
     if (tmp_c != '0')                     //decimal integer or real number s
     {
-        tmp_c = BUFFER[forward_p++];
+        tmp_c = BUFFER[forward_p];
         while (isdigit(tmp_c))
-            tmp_c = BUFFER[forward_p++];
-        if (tmp_c == '.' || tmp_c == 'E') //real
+            tmp_c = BUFFER[++forward_p];
+        if (tmp_c == '.' and BUFFER[forward_p]!='.') //real
+        {
+            real_identify();
+            return;
+        }
+        else if (tmp_c == '.' and BUFFER[forward_p]=='.')
+        {
+            forward_p--;
+            decimal_identify();
+        }
+        else if(tmp_c == 'E')
         {
             real_identify();
             return;
@@ -332,8 +369,13 @@ void Lexer::digits_identify()
             hex_identify();
         else if (isdigit(tmp_c) && tmp_c>='0' && tmp_c<='7')
             oct_identify();
-        else if (tmp_c == '.')
+        else if (tmp_c == '.' and BUFFER[forward_p] != '.')
             real_identify();
+        else if (tmp_c == '.' and BUFFER[forward_p] == '.')
+        {
+            forward_p--;
+            decimal_identify();
+        }
         else                    //decimal integer or real
         {
             tmp_c = BUFFER[forward_p++];
@@ -390,7 +432,7 @@ void Lexer::token_analysis(const char* name)
     out_fp = fopen("token.txt", "w");
     if (fp == NULL)
     {
-        printf("Can't open sample.c\n");
+        printf("Can't open %s\n", name);
         exit(-1);
     }
     if (out_fp == NULL)

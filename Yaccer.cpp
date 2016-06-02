@@ -101,7 +101,7 @@ void Yaccer::LR_analysis(const char* token_file)
         }
         else if (ac==ERROR)
         {
-            cout << "error when parsing " << current_word.type << endl;
+            cout << "error when parsing " << terminals_str[current_word.type] << endl;
             break;
         }
         else
