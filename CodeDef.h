@@ -75,4 +75,6 @@
 #define POS     72
 #define NEG     73
 #define NUM     74
+#define INPUT   75
+#define OUTPUT  76
 #endif // CODEDEF_H
