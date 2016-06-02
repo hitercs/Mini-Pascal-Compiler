@@ -83,8 +83,14 @@ void Yaccer::import_production(const char* pro_str)
 void Yaccer::LR_analysis(const char* token_file)
 {
     printf("*************************LR(1) analysis begin****************************\n");
-    StatusStack.push(START_S);
-    GrammarStack.push(ENP);
+    //... ÓÃGraAttrStack À´´úÌæ
+    GraAttrNode newNode;
+    newNode.gra_code = START_S;
+    newNode.attr_ptr = new Attributes;
+    GraAttrStack.push(newNode);
+    StatusStack.push(ENP);
+    //GrammarStack.push(ENP);
+    //AttrStack.push(NULL);
     int top_status = START_S;
     Bibuffer Words(token_file);
     token current_word = Words.get_token();        //warning: char to int Problems char !!
@@ -96,7 +102,11 @@ void Yaccer::LR_analysis(const char* token_file)
         {
             top_status = ac;
             StatusStack.push(top_status);
-            GrammarStack.push(current_word.type);
+            newNode.gra_code = current_word.type;
+            newNode.attr_ptr = new Attributes;
+            GraAttrStack.push(newNode);
+            //GrammarStack.push(current_word.type);
+            //AttrStack.push(NULL);
             cout << "shift: " << terminals_str[current_word.type] << endl;
             current_word = Words.get_token();
         }
@@ -111,8 +121,12 @@ void Yaccer::LR_analysis(const char* token_file)
             // with error
             reduce_num = production[-ac][0];
             StatusStack.npop(reduce_num);
-            GrammarStack.npop(reduce_num);
-            GrammarStack.push(production[-ac][1]);
+            GraAttrStack.npop(reduce_num);
+            //GrammarStack.npop(reduce_num);
+            newNode.gra_code = production[-ac][1];
+            newNode.attr_ptr = new Attributes;
+            GraAttrStack.push(newNode);
+            //GrammarStack.push(production[-ac][1]);
             //printf("grammar stack top is %d\n", -production[-ac][1]);
             //printf("status stack top is %d\n",StatusStack.top_ele());
             //printf("x = %d, y = %d, GOTO[X][Y] = %d\n", StatusStack.top_ele(),-production[-ac][1],GOTO[StatusStack.top_ele()][-production[-ac][1]]);

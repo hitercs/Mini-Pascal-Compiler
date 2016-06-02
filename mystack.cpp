@@ -58,4 +58,6 @@ int MyStack<T>::npop(int n)
         return -1;
 }
 template class MyStack<int>;
-template class MyStack<Attributes>;
+template class MyStack<Attributes*>;
+template class MyStack<HierachSymbols*>;
+template class MyStack<GraAttrNode>;

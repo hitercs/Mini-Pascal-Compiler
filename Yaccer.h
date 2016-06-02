@@ -32,10 +32,11 @@ private:
     int ACTION[STATUS_NUM][TERMINAL_NUM];
     int production[VAR_LEN][MAX_LEN];
     MyStack<int> StatusStack;
-    MyStack<int> GrammarStack;
-    stack<int> offset;
-    stack<HierachSymbols*> tblptr;
+    //MyStack<int> GrammarStack;
+    MyStack<int> offset;
+    MyStack<HierachSymbols*> tblptr;
     //attributes stacks
-    MyStack<Attributes> AttributeStack;
+    //MyStack<Attributes*> AttrStack;
+    MyStack<GraAttrNode> GraAttrStack;
 };
 #endif // YACCER_H
