@@ -74,9 +74,8 @@
 #define DIG     71
 #define POS     72
 #define NEG     73
-#define NUM     74
 #define INPUT   75
 #define OUTPUT  76
-#define TRUE    77
-#define FALSE   78
+#define TRUE_    77
+#define FALSE_   78
 #endif // CODEDEF_H

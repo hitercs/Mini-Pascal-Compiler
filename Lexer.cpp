@@ -294,7 +294,7 @@ void Lexer::real_identify()
 }
 void Lexer::decimal_identify()
 {
-    int type = DIG;
+    int type = INT;
     char tmp_c = BUFFER[forward_p];
     while (isdigit(tmp_c))
         tmp_c = BUFFER[++forward_p];

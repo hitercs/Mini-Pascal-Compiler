@@ -13,11 +13,13 @@
 using namespace std;
 class Yaccer{
 public:
-    Yaccer(Lexer& fromlex, const char* file_str=NULL, const char* prod_file=NULL);
+    Yaccer(Lexer& fromlex, const char* file_str=NULL, const char* prod_file=NULL, const char* ter_file=NULL, const char* pro_str_file=NULL);
     void import_production(const char* pro_str); // Read production lines
     void install_table(const char* file_str);    // install goto table and action table
     void LR_analysis(const char* token_file);    // LR analysis
 private:
+    void readProstr(const char* file_str);
+    void readTerstr(const char* file_str);
     HierachSymbols* mktable(HierachSymbols* fa_ptr);
     void enter(HierachSymbols* ptr, char str[], int t, int off);
     void addwidth(HierachSymbols* ptr, int w);

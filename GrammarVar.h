@@ -24,4 +24,10 @@
 #define TERM -22
 #define FACTOR -23
 #define SIGN -24
+#define RELOP -25
+#define PLUS_MIN_OP -26
+#define MUL_DIV_OP -27
+#define BOOL_EXPRESSION -28
+#define NUM -29
+
 #endif // GRAMMARVAR_H

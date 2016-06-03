@@ -11,9 +11,9 @@
 #define ENP 0
 #define START_S 0
 using namespace std;
-extern char pros_str[200][100];
-extern char terminals_str[200][50];
-Yaccer::Yaccer(Lexer& fromlex, const char* file_str, const char* prod_file)
+char pros_str[200][200];
+char terminals_str[200][100];
+Yaccer::Yaccer(Lexer& fromlex, const char* file_str, const char* prod_file, const char* ter_file, const char* pro_str_file)
 {
     memset(GOTO_TABLE, 0, STATUS_NUM*VAR_NUM*sizeof(int));
     memset(ACTION, 0, STATUS_NUM*TERMINAL_NUM*sizeof(int));
@@ -28,9 +28,51 @@ Yaccer::Yaccer(Lexer& fromlex, const char* file_str, const char* prod_file)
     {
         import_production(prod_file);
     }
+    if (!(ter_file == NULL))
+    {
+        readTerstr(ter_file);
+    }
+    if (!(pro_str_file == NULL))
+    {
+        readProstr(pro_str_file);
+    }
     else
         cout << "Warning: token file name is not specified" << endl;
 }
+
+void Yaccer::readProstr(const char* file_str)
+{
+    FILE* fp = fopen(file_str, "r");
+    int n=1;
+    if (fp==NULL)
+    {
+        cout << "File: " << file_str << " can't be opened" << endl;
+        return;
+    }
+    //while(fscanf(fp, "%s\n", pros_str[n++])!= EOF);
+    //while(fscanf(fp, "%s\n", terminals_str[n++])!= EOF);
+    while(fgets(pros_str[n], 200, fp) != NULL)
+    {
+        n++;
+    };
+}
+
+void Yaccer::readTerstr(const char* file_str)
+{
+    FILE* fp = fopen(file_str, "r");
+    int n=0; //从0 开始读入
+    if (fp==NULL)
+    {
+        cout << "File: " << file_str << " can't be opened" << endl;
+        return;
+    }
+    //while(fscanf(fp, "%s\n", terminals_str[n++])!= EOF);
+    while(fgets(terminals_str[n], 100, fp) != NULL)
+    {
+        n++;
+    };
+}
+
 void Yaccer::install_table(const char* file_str)
 {
     // install action_table and goto table
@@ -169,7 +211,7 @@ void Yaccer::LR_analysis(const char* token_file)
             newNode.gra_code = current_word.type;
             // 收集词法分析的属性
             newNode.attr_ptr = new Attributes;
-            if (current_word.type == DIG)
+            if (current_word.type == INT)
             {
                 tmp_int = lex.int_consts[current_word.xpos];
                 newNode.attr_ptr->set_attr("var", INT, &tmp_int);
@@ -191,12 +233,12 @@ void Yaccer::LR_analysis(const char* token_file)
             }
             GraAttrStack.push(newNode);
             //GrammarStack.push(current_word.type);
-            cout << "shift: " << terminals_str[current_word.type] << endl;
+            cout << "shift: " << terminals_str[current_word.type] ;
             current_word = Words.get_token();
         }
         else if (ac==ERROR)
         {
-            cout << "error when parsing " << terminals_str[current_word.type] << endl;
+            //cout << "error when parsing " << terminals_str[current_word.type] << endl;
             break;
         }
         else
@@ -206,9 +248,10 @@ void Yaccer::LR_analysis(const char* token_file)
             // -ac 是产生式标号（从0 开始计数），按照不同的产生式规约，应用不同的语义动作
             newNode.gra_code = production[-ac][1];
             newNode.attr_ptr = new Attributes;
+            /*
             switch (-ac)
             {
-            //**********************以下是声明语句的翻译********************************
+            **********************以下是声明语句的翻译********************************
             case 1:
                 // 用产生式 M-> e 来规约时，新建一个嵌套深度为1的符号表
                 current_level ++;
@@ -348,8 +391,9 @@ void Yaccer::LR_analysis(const char* token_file)
                     current_level--;
                     break;
                 }
-              //**********************以上是声明语句的翻译********************************
+              **********************以上是声明语句的翻译********************************
             }
+            */
             reduce_num = production[-ac][0];
             StatusStack.npop(reduce_num);
             GraAttrStack.npop(reduce_num);
@@ -358,13 +402,13 @@ void Yaccer::LR_analysis(const char* token_file)
             //GrammarStack.push(production[-ac][1]);
             top_status = GOTO_TABLE[StatusStack.top_ele()][-production[-ac][1]];
             StatusStack.push(top_status);
-            cout << "Reduce with production: " << pros_str[-ac] << endl;
+            cout << "Reduce with production: " << pros_str[-ac] ;
         }
         top_status = StatusStack.top_ele();
         ac = ACTION[top_status][current_word.type];
     }
     if (ac==ACC)
-        cout << "parsing succeeded" << endl;
+        cout << "\nparsing succeeded" << endl;
     printf("*************************LR(1) analysis end****************************\n");
     return;
 }
