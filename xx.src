@@ -1,0 +1,20 @@
+prog id ( input , output ) semi
+var
+	id , id : array [ integer .. integer ] of integer semi
+	id : real semi
+	id : real semi
+function id ( id : real semi id : real ) : real semi
+var 
+	id : real semi
+begin 
+	if ( id > id )
+	then 
+		id assignop  id - id
+	else
+		id assignop  id - id
+end semi
+begin
+	id assignop integer semi
+	id assignop  integer semi 
+	id ( id , id )
+end

@@ -1,0 +1,131 @@
+[nonterminal]
+	program 
+	subprogram_declarations 
+	identifier_list
+	declarations
+	compound_statement
+	declaration
+	type
+	standard_type
+	M
+	M1
+	M2
+	N
+	subprogram_declarations 
+	subprogram_declaration
+	subprogram_head 
+	arguments 
+	parameter_list
+	optional_statements 
+	statement_list 
+	statement
+	procedure_statement
+	compound_statement
+ 	variable 
+	expression
+	expression_list
+	simple_expression
+	term 
+	factor 
+	sign
+	relop
+	plus_min_op
+	mul_div_op
+	bool_expression
+	num 
+[terminal]
+	prog 
+	id 
+	( 
+	) 
+	semi 
+	, 
+	var 
+	:  
+	.. 
+	of
+	array 
+	integer 
+	real 
+	[ 
+	]
+	begin 
+	end 
+	function 
+	procedure
+	if 
+	then 
+	else 
+	while 
+	do
+	assignop     
+	not 
+	+ 
+	- 
+	> 
+	<
+	= 
+	>=  
+	<= 
+	<>
+	*
+	/
+	true
+	false
+	input 
+	output
+[start]
+	program'
+[production]
+	program' => program ;
+	program => prog id ( input , output ) semi M
+			   declarations
+			   subprogram_declarations
+			   compound_statement ;
+	M => ;
+	M1 => ;
+	M2 => ;
+	N => ;
+	identifier_list => id | identifier_list , id ;
+	declarations => var declaration semi | ;
+	declaration => declaration semi identifier_list : type |
+				   identifier_list : type ;
+	type => standard_type |
+			array [ integer .. integer ] of standard_type ;
+	standard_type => integer | real ;
+	subprogram_declarations => subprogram_declarations
+							  subprogram_declaration semi | ;
+	subprogram_declaration => subprogram_head
+							  declarations
+							  compound_statement ;
+	subprogram_head => function id arguments : standard_type semi |
+					   procedure id arguments semi ;
+	arguments => ( parameter_list ) | ;
+	parameter_list => identifier_list : type |
+					  parameter_list semi identifier_list : type ;
+	compound_statement => begin optional_statements end ;
+	optional_statements => statement_list | ;
+	statement_list => statement | statement_list semi statement ;
+	statement => variable assignop expression |
+				 procedure_statement |
+				 compound_statement |
+				 if bool_expression then M1 statement N else M2 statement |
+				 while M1 bool_expression do M2 statement ;
+	bool_expression => not bool_expression ;
+	bool_expression => ( bool_expression ) ;
+	bool_expression => simple_expression relop simple_expression ;
+	bool_expression => true;
+	bool_expression => false;
+	variable => id | id [ expression ] ;
+	procedure_statement => id | id ( expression_list ) ;
+	expression_list => expression | expression_list , expression ;
+	expression => simple_expression ;			 
+	simple_expression => term | sign term |
+						 simple_expression plus_min_op term ;
+	term => factor | term mul_div_op factor ;
+	factor => id | id ( expression_list ) | num | ( expression ) ;
+	sign => + | - ;
+	relop => > | < | = | >= | <= | <> ;
+	plus_min_op => + | - ;
+	mul_div_op => * | / ;
+	num => integer | real ;

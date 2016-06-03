@@ -12,6 +12,7 @@ statement_list -> statement
 statement -> procedure_statement
 procedure_statement -> id
 variable -> id
+M1 -> ¦Å
 arguments -> ¦Å
 identifier_list -> identifier_list , id
 declaration -> identifier_list : type
@@ -55,12 +56,14 @@ simple_expression -> simple_expression plus_min_op term
 term -> term mul_div_op factor
 factor -> ( expression )
 bool_expression -> ( bool_expression )
-statement -> while bool_expression do statement
+M2 -> ¦Å
 arguments -> ( parameter_list )
 expression_list -> expression_list , expression
+N -> ¦Å
 factor -> id ( expression_list )
 subprogram_head -> function id arguments : standard_type semi
 parameter_list -> identifier_list : type
-statement -> if bool_expression then statement else statement
+statement -> while M1 bool_expression do M2 statement
 parameter_list -> parameter_list semi identifier_list : type
 type -> array [ integer .. integer ] of standard_type
+statement -> if bool_expression then M1 statement N else M2 statement
