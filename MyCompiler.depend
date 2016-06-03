@@ -67,14 +67,16 @@
 
 1464888678 d:\code\mycompiler\mystack.h
 
-1464946662 d:\code\mycompiler\yaccer.h
+1464964833 d:\code\mycompiler\yaccer.h
 	<Stack>
 	"DataStructure.h"
 	"mystack.h"
 	"attributes.h"
+	<fstream>
 	"Lexer.h"
+	"string"
 
-1464952121 source:d:\code\mycompiler\yaccer.cpp
+1464967727 source:d:\code\mycompiler\yaccer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
@@ -85,6 +87,8 @@
 	"mystack.h"
 	"CodeDef.h"
 	"constStrings.h"
+	<fstream>
+	<sstream>
 
 1464946641 d:\code\mycompiler\conststrings.h
 

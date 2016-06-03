@@ -1,0 +1,6 @@
+___tmp0 := T - S
+RESULT := ___tmp0 
+___tmp1 := S - T
+RESULT := ___tmp1 
+TMP1 := 1 
+TMP2 := 2 

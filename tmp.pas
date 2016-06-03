@@ -16,5 +16,5 @@ end;
 begin
 	tmp1 := 1;
 	tmp2 := 2;
-	abs(s, t)
+	abs(tmp1, tmp2)
 end

@@ -4,7 +4,9 @@
 #include "DataStructure.h"
 #include "mystack.h"
 #include "attributes.h"
+#include <fstream>
 #include "Lexer.h"
+#include "string"
 #define STATUS_NUM      1000
 #define TERMINAL_NUM    200
 #define VAR_NUM         200
@@ -18,6 +20,8 @@ public:
     void install_table(const char* file_str);    // install goto table and action table
     void LR_analysis(const char* token_file);    // LR analysis
 private:
+    symbol* lookup(char key_[]);
+    void newtmp(char ret[]);
     void readProstr(const char* file_str);
     void readTerstr(const char* file_str);
     HierachSymbols* mktable(HierachSymbols* fa_ptr);
@@ -43,5 +47,7 @@ private:
     MyStack<int> offset;
     MyStack<HierachSymbols*> tblptr;
     MyStack<GraAttrNode> GraAttrStack;
+    int curTmp;
+    FILE* out;
 };
 #endif // YACCER_H
