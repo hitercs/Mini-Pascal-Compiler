@@ -23,7 +23,7 @@ private:
     void addwidth(HierachSymbols* ptr, int w);
     void enterproc(HierachSymbols* ptr, char name[], HierachSymbols* child);
     Lexer lex;
-
+    HierachSymbols* SymbolTableRoot;
     int GOTO_TABLE[STATUS_NUM][VAR_NUM];
     // + indicate shift
     // - indicate reduce

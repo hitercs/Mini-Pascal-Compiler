@@ -19,6 +19,7 @@ Yaccer::Yaccer(Lexer& fromlex, const char* file_str, const char* prod_file)
     memset(ACTION, 0, STATUS_NUM*TERMINAL_NUM*sizeof(int));
     lex = fromlex;
     current_level = 0;
+    SymbolTableRoot = NULL;
     if (!(file_str==NULL))
     {
         install_table(file_str);
@@ -89,11 +90,6 @@ void Yaccer::import_production(const char* pro_str)
 HierachSymbols* Yaccer::mktable(HierachSymbols* fa_ptr)
 {
     HierachSymbols* newTable;
-    if (fa_ptr == NULL)
-    {
-        newTable = new HierachSymbols;
-        return newTable;
-    }
     newTable = new HierachSymbols;
     newTable->father = fa_ptr;
     // 保存当前嵌套深度到符号表的头部
@@ -212,10 +208,13 @@ void Yaccer::LR_analysis(const char* token_file)
             newNode.attr_ptr = new Attributes;
             switch (-ac)
             {
+            //**********************以下是声明语句的翻译********************************
             case 1:
                 // 用产生式 M-> e 来规约时，新建一个嵌套深度为1的符号表
+                current_level ++;
                 newTable = mktable(NULL);
                 tblptr.push(newTable);
+                SymbolTableRoot = newTable;
                 offset.push(0);
                 break;
             case 19:
@@ -238,7 +237,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     int left_dig = *((int*)(((GraAttrStack.top_ele_by_off(-5)).attr_ptr)->search_attr("var")->var_p));
                     int right_dig = *((int*)(((GraAttrStack.top_ele_by_off(-3)).attr_ptr)->search_attr("var")->var_p));
                     int width = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("width")->var_p));
-                    tmp_int = (right_dig - left_dig)*width;
+                    tmp_int = (right_dig - left_dig+1)*width;
                     newNode.attr_ptr->set_attr("width", INT, &tmp_int);
                     tmp_int = ARRAY;
                     newNode.attr_ptr->set_attr("type", INT, &tmp_int);
@@ -306,14 +305,50 @@ void Yaccer::LR_analysis(const char* token_file)
                     addwidth(current_tb, offset.top_ele());
                     tblptr.npop(1);
                     offset.npop(1);
+                    strcpy(tmp_str,(char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("name")->var_p));
                     //xx 应该替换成 subprogram_head.name
                     if (tblptr.is_empty())
-                        enterproc(NULL, "xx", current_tb);
+                        enterproc(NULL, tmp_str, current_tb);
                     else
-                        enterproc(tblptr.top_ele(), "xx", current_tb);
+                        enterproc(tblptr.top_ele(), tmp_str, current_tb);
                     current_level--;
                     break;
                 }
+             case 47:
+                {
+                    //用产生式 subprogram_head -> function id arguments : standard_type semi 来规约时，新建一个符号表
+                    current_level++;
+                    newTable = mktable(tblptr.top_ele());
+                    tblptr.push(newTable);
+                    offset.push(0);
+                    //保存id 的name 到subprogram_head中
+                    strcpy(tmp_str,(char*)((GraAttrStack.top_ele_by_off(-4).attr_ptr)->search_attr("name")->var_p));
+                    newNode.attr_ptr->set_attr("name", STRING, tmp_str);
+                    break;
+                }
+             case 35:
+                {
+                    //用产生式subprogram_head -> procedure id arguments semi 来规约， 新建一个符号表
+                    current_level++;
+                    newTable = mktable(tblptr.top_ele());
+                    tblptr.push(newTable);
+                    offset.push(0);
+                    //保存id 的name 到subprogram_head中
+                    strcpy(tmp_str,(char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("name")->var_p));
+                    newNode.attr_ptr->set_attr("name", STRING, tmp_str);
+                    break;
+                }
+             case 5:
+                {
+                    //用产生式program -> prog id ( input , output ) semi M declarations subprogram_declarations compound_statement来规约时，填充符号表头部
+                    HierachSymbols* current_tb = tblptr.top_ele();
+                    addwidth(current_tb, offset.top_ele());
+                    tblptr.npop(1);
+                    offset.npop(1);
+                    current_level--;
+                    break;
+                }
+              //**********************以上是声明语句的翻译********************************
             }
             reduce_num = production[-ac][0];
             StatusStack.npop(reduce_num);
