@@ -77,4 +77,6 @@
 #define NUM     74
 #define INPUT   75
 #define OUTPUT  76
+#define TRUE    77
+#define FALSE   78
 #endif // CODEDEF_H
