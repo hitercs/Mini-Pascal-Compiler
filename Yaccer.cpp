@@ -891,6 +891,16 @@ void Yaccer::LR_analysis(const char* token_file)
                     //newNode.relop_name = "<>";
                     break;
                 }
+                case 66:
+                // 用产生式：statement -> while M1 bool_expression do M2 statement
+                {
+                    backpatch(GraAttrStack.top_ele().nextlist, GraAttrStack.top_ele_by_off(-4).quad);
+                    backpatch(GraAttrStack.top_ele_by_off(-3).truelist, GraAttrStack.top_ele_by_off(-1).quad);
+                    newNode.nextlist = GraAttrStack.top_ele_by_off(-3).falselist;
+                    CodeStream[nextquad++].type = GOTO;
+                    CodeStream[nextquad++].result_addr = intToString(GraAttrStack.top_ele_by_off(-4).quad);
+                    break;
+                }
             }
             reduce_num = production[-ac][0];
             StatusStack.npop(reduce_num);
