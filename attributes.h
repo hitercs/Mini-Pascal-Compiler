@@ -24,7 +24,12 @@ private:
 typedef struct GraAttrNode{
     int gra_code;
     int quad;
-    int offset;
+    int offset;         // 数组翻译使用
+    char addr[MAX_LEN]; //变量的名字
+    int type;
+    int width;
+    float var_float;
+    int var_int;
     Attributes* attr_ptr;
     vector < int > truelist;
     vector < int > falselist;

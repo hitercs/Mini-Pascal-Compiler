@@ -285,8 +285,8 @@ void Yaccer::LR_analysis(const char* token_file)
     newNode.attr_ptr = new Attributes;
     GraAttrStack.push(newNode);
     StatusStack.push(ENP);
-    int tmp_int;
-    float tmp_float;
+    //int tmp_int;
+    //float tmp_float;
     char tmp_str[MAX_LEN];
     //GrammarStack.push(ENP);
     int top_status = START_S;
@@ -307,29 +307,36 @@ void Yaccer::LR_analysis(const char* token_file)
             newNode.attr_ptr = new Attributes;
             if (current_word.type == INT)
             {
-                tmp_int = lex.int_consts[current_word.xpos];
-                newNode.attr_ptr->set_attr("var", INT, &tmp_int);
-                tmp_int = INT;
-                newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                newNode.var_int = lex.int_consts[current_word.xpos];
+                newNode.type = INT;
+                //newNode.attr_ptr->set_attr("var", INT, &tmp_int);
+                //tmp_int = INT;
+                //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
             }
             else if (current_word.type == REAL)
             {
-                tmp_float = lex.float_consts[current_word.xpos];
-                newNode.attr_ptr->set_attr("var", REAL, &tmp_float);
-                tmp_int = REAL;
-                newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                newNode.var_float = lex.float_consts[current_word.xpos];
+                newNode.type = REAL;
+                //tmp_float = lex.float_consts[current_word.xpos];
+                //newNode.attr_ptr->set_attr("var", REAL, &tmp_float);
+                //tmp_int = REAL;
+                //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
             }
             else if (current_word.type == STRING)
             {
-                strcpy(tmp_str, lex.string_consts[current_word.xpos]);
-                newNode.attr_ptr->set_attr("var", STRING, tmp_str);
-                tmp_int = STRING;
-                newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                strcpy(newNode.addr, lex.string_consts[current_word.xpos]);
+                newNode.type = STRING;
+                //strcpy(tmp_str, lex.string_consts[current_word.xpos]);
+                //newNode.attr_ptr->set_attr("var", STRING, tmp_str);
+                //tmp_int = STRING;
+                //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
             }
             else if (current_word.type == ID)
             {
-                strcpy(tmp_str, lex.search_symbols(current_word.xpos, current_word.ypos)->name);
-                newNode.attr_ptr->set_attr("name", STRING, tmp_str);
+                strcpy(newNode.addr, lex.search_symbols(current_word.xpos, current_word.ypos)->name);
+                newNode.type = STRING;
+                //strcpy(tmp_str, lex.search_symbols(current_word.xpos, current_word.ypos)->name);
+                //newNode.attr_ptr->set_attr("name", STRING, tmp_str);
             }
             GraAttrStack.push(newNode);
             //GrammarStack.push(current_word.type);
@@ -362,21 +369,30 @@ void Yaccer::LR_analysis(const char* token_file)
                 break;
             case 20:
                 // 用产生式 standard_type => integer 来规约时，添加：属性type 和 width
-                tmp_int = INT;
-                newNode.attr_ptr->set_attr("type", INT, &tmp_int);
-                tmp_int = sizeof(int);
-                newNode.attr_ptr->set_attr("width", INT, &tmp_int);
+                newNode.type = INT;
+                newNode.width = sizeof(int);
+                //tmp_int = INT;
+                //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                //tmp_int = sizeof(int);
+                //newNode.attr_ptr->set_attr("width", INT, &tmp_int);
                 break;
             case 21:
                 // 用产生式 standard_type => real 来规约时，添加：属性type 和 width
-                tmp_int = REAL;
-                newNode.attr_ptr->set_attr("type", INT, &tmp_int);
-                tmp_int = sizeof(float);
-                newNode.attr_ptr->set_attr("width", INT, &tmp_int);
+                newNode.type = REAL;
+                newNode.width = sizeof(float);
+                //tmp_int = REAL;
+                //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                //tmp_int = sizeof(float);
+                //newNode.attr_ptr->set_attr("width", INT, &tmp_int);
                 break;
             case 68:
                 // 用产生式type -> array [ integer .. integer ] of standard_type 来规约时，添加：综合属性 type.type, type.width
                 {
+                    int left_dig = GraAttrStack.top_ele_by_off(-5).var_int;
+                    int right_dig = GraAttrStack.top_ele_by_off(-3).var_int;
+                    newNode.width = (right_dig - left_dig+1)*(GraAttrStack.top_ele()).width;
+                    newNode.type = ARRAY;
+                    /*
                     int left_dig = *((int*)(((GraAttrStack.top_ele_by_off(-5)).attr_ptr)->search_attr("var")->var_p));
                     int right_dig = *((int*)(((GraAttrStack.top_ele_by_off(-3)).attr_ptr)->search_attr("var")->var_p));
                     int width = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("width")->var_p));
@@ -384,15 +400,20 @@ void Yaccer::LR_analysis(const char* token_file)
                     newNode.attr_ptr->set_attr("width", INT, &tmp_int);
                     tmp_int = ARRAY;
                     newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                    */
                     break;
                 }
             case 19:
                 // 用产生式 type -> standard_type 来规约时，进行属性传递
                 {
+                    newNode.width = GraAttrStack.top_ele().width;
+                    newNode.type = GraAttrStack.top_ele().type;
+                    /*
                     int width = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("width")->var_p));
                     int type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
                     newNode.attr_ptr->set_attr("width", INT, &width);
                     newNode.attr_ptr->set_attr("type", INT, &type);
+                    */
                     break;
                 }
             case 4:
@@ -414,6 +435,14 @@ void Yaccer::LR_analysis(const char* token_file)
                     int type, width;
                     while(!ID_STACK.is_empty())
                     {
+                        type = GraAttrStack.top_ele().type;
+                        width = GraAttrStack.top_ele().width;
+                        enter(current_tb, ID_STACK.top_ele().addr, type, offset.top_ele());
+                        width += offset.top_ele();
+                        offset.npop(1);
+                        offset.push(width);
+                        ID_STACK.npop(1);
+                        /*
                         type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
                         width = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("width")->var_p));
                         enter(current_tb, (char*)((ID_STACK.top_ele().attr_ptr)->search_attr("name")->var_p), type, offset.top_ele());
@@ -421,6 +450,7 @@ void Yaccer::LR_analysis(const char* token_file)
                         offset.npop(1);
                         offset.push(width);
                         ID_STACK.npop(1);
+                        */
                     }
                     break;
                 }
@@ -431,6 +461,14 @@ void Yaccer::LR_analysis(const char* token_file)
                     int type, width;
                     while(!ID_STACK.is_empty())
                     {
+                        type = GraAttrStack.top_ele().type;
+                        width = GraAttrStack.top_ele().width;
+                        enter(current_tb, GraAttrStack.top_ele().addr, type, offset.top_ele());
+                        width += offset.top_ele();
+                        offset.npop(1);
+                        offset.push(width);
+                        ID_STACK.npop(1);
+                        /*
                         type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
                         width = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("width")->var_p));
                         enter(current_tb, (char*)((ID_STACK.top_ele().attr_ptr)->search_attr("name")->var_p), type, offset.top_ele());
@@ -438,6 +476,7 @@ void Yaccer::LR_analysis(const char* token_file)
                         offset.npop(1);
                         offset.push(width);
                         ID_STACK.npop(1);
+                        */
                     }
                     break;
                 }
@@ -448,7 +487,8 @@ void Yaccer::LR_analysis(const char* token_file)
                     addwidth(current_tb, offset.top_ele());
                     tblptr.npop(1);
                     offset.npop(1);
-                    strcpy(tmp_str,(char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("name")->var_p));
+                    strcpy(tmp_str,GraAttrStack.top_ele_by_off(-2).addr);
+                    //strcpy(tmp_str,(char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("name")->var_p));
                     //xx 应该替换成 subprogram_head.name
                     if (tblptr.is_empty())
                         enterproc(NULL, tmp_str, current_tb);
@@ -465,8 +505,8 @@ void Yaccer::LR_analysis(const char* token_file)
                     tblptr.push(newTable);
                     offset.push(0);
                     //保存id 的name 到subprogram_head中
-                    strcpy(tmp_str,(char*)((GraAttrStack.top_ele_by_off(-4).attr_ptr)->search_attr("name")->var_p));
-                    newNode.attr_ptr->set_attr("name", STRING, tmp_str);
+                    strcpy(newNode.addr, GraAttrStack.top_ele_by_off(-4).addr);
+                    //newNode.attr_ptr->set_attr("name", STRING, tmp_str);
                     break;
                 }
              case 50:
@@ -477,8 +517,9 @@ void Yaccer::LR_analysis(const char* token_file)
                     tblptr.push(newTable);
                     offset.push(0);
                     //保存id 的name 到subprogram_head中
-                    strcpy(tmp_str,(char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("name")->var_p));
-                    newNode.attr_ptr->set_attr("name", STRING, tmp_str);
+                    strcpy(newNode.addr, GraAttrStack.top_ele_by_off(-2).addr);
+                    //strcpy(tmp_str,(char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("name")->var_p));
+                    //newNode.attr_ptr->set_attr("name", STRING, tmp_str);
                     break;
                 }
              case 5:
@@ -496,38 +537,47 @@ void Yaccer::LR_analysis(const char* token_file)
              case 27:
                  // 用产生式 factor -> id 来规约时，通过ID.name 查符号表
                 {
-                    strcpy(tmp_str,(char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("name")->var_p));
-                    symbol* ptr = lookup(tmp_str);
+                    //strcpy(tmp_str,(char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("name")->var_p));
+                    symbol* ptr = lookup(GraAttrStack.top_ele().addr);
                     if (ptr == NULL)
                     {
                         printf("[Error:] %s is undefined\n", tmp_str);
                         break;
                     }
-                    strcpy(tmp_str, ptr->name);
+                    strcpy(newNode.addr, ptr->name);
+                    //strcpy(tmp_str, ptr->name);
                     // set id.name to factor.addr
-                    newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
+                    //newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
                     break;
                 }
              case 28:
                 // 用产生式 num -> integer 来规约时
                 {
+                    newNode.type = (GraAttrStack.top_ele()).type;
+                    newNode.var_int = (GraAttrStack.top_ele()).var_int;
+                    /*
                     int type, value;
                     type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
                     value = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("var")->var_p));
                     printf("value is %d\n", value);
                     newNode.attr_ptr->set_attr("type", INT, &type);
                     newNode.attr_ptr->set_attr("val", INT, &value);
+                    */
                     break;
                 }
              case 29:
                  // 用产生式 num -> real 来规约时
                 {
+                    newNode.type = (GraAttrStack.top_ele()).type;
+                    newNode.var_float = (GraAttrStack.top_ele()).var_float;
+                    /*
                     int type;
                     type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
                     tmp_float = *((float*)((GraAttrStack.top_ele().attr_ptr)->search_attr("var")->var_p));
                     newNode.attr_ptr->set_attr("type", INT, &type);
                     newNode.attr_ptr->set_attr("val", REAL, &tmp_float);
                     break;
+                    */
                 }
              case 26:
                  // 当用产生式 factor -> num 来规约时
@@ -537,28 +587,31 @@ void Yaccer::LR_analysis(const char* token_file)
                     char var[20];
                     //printf("new str is %s\n", newlabel);
                     int type;
-                    type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
+                    type = GraAttrStack.top_ele().type;
+                    //type = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("type")->var_p));
                     if (type == INT)
                     {
-                        tmp_int = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("val")->var_p));
-                        itoa(tmp_int, var, 10);
+                        //tmp_int = *((int*)((GraAttrStack.top_ele().attr_ptr)->search_attr("val")->var_p));
+                        itoa(GraAttrStack.top_ele().var_int, var, 10);
                     }
                     else if (type == REAL)
                     {
-                        tmp_float = *((float*)((GraAttrStack.top_ele().attr_ptr)->search_attr("val")->var_p));
-                        gcvt(tmp_float, 5, var);
+                        //tmp_float = *((float*)((GraAttrStack.top_ele().attr_ptr)->search_attr("val")->var_p));
+                        gcvt(GraAttrStack.top_ele().var_float, 5, var);
                     }
                     else
-                        strcpy(var, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("val")->var_p));
+                        strcpy(var, GraAttrStack.top_ele().addr);
                     //fprintf(out, "%s := %s\n", newlabel, var);
-                    newNode.attr_ptr->set_attr("addr", STRING, var);
+                    strcpy(newNode.addr, var);
+                    //newNode.attr_ptr->set_attr("addr", STRING, var);
                     break;
                 }
              case 25:
                  // 用产生式 term -> factor 来规约时
                 {
-                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
-                    newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
+                    strcpy(newNode.addr, GraAttrStack.top_ele().addr);
+                    //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
+                    //newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
                     break;
                 }
              case 56:
@@ -566,10 +619,11 @@ void Yaccer::LR_analysis(const char* token_file)
                 {
                     char newlabel[MAX_LEN];
                     newtmp(newlabel);
-                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
-                    char tmp_str2[MAX_LEN];
-                    strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
-                    int type = *((int*)((GraAttrStack.top_ele_by_off(-1).attr_ptr)->search_attr("type")->var_p));
+                    //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
+                    //char tmp_str2[MAX_LEN];
+                    //strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
+                    //int type = *((int*)((GraAttrStack.top_ele_by_off(-1).attr_ptr)->search_attr("type")->var_p));
+                    int type = GraAttrStack.top_ele_by_off(-1).type;
                     if (type == MULTI)
                     {
                         //fprintf(out, "%s := %s * %s", newlabel, tmp_str, tmp_str2);
@@ -583,59 +637,67 @@ void Yaccer::LR_analysis(const char* token_file)
                         CodeStream[nextquad].type = ASSIGN_FORM_3;
                     }
                     CodeStream[nextquad].result_addr = newlabel;
-                    CodeStream[nextquad].arg1_addr = tmp_str;
-                    CodeStream[nextquad].result_addr = tmp_str2;
+                    CodeStream[nextquad].arg1_addr = GraAttrStack.top_ele().addr;
+                    CodeStream[nextquad].result_addr = GraAttrStack.top_ele_by_off(-2).addr;
                     nextquad++;
-                    newNode.attr_ptr->set_attr("addr", STRING, newlabel);
+                    strcpy(newNode.addr, newlabel);
+                    //newNode.attr_ptr->set_attr("addr", STRING, newlabel);
                     break;
                 }
              case 46:
                 // 用产生式 mul_div_op -> * 时， 保存op-type
                 {
-                    tmp_int = MULTI;
-                    newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                    newNode.type = MULTI;
+                    //tmp_int = MULTI;
+                    //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
                     break;
                 }
              case 47:
                 // 用产生式 mul_div_op -> / 时， 保存op-type
                 {
-                    tmp_int = DIV;
-                    newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                    newNode.type = DIV;
+                    //tmp_int = DIV;
+                    //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
                     break;
                 }
              case 24:
-                // 用产生式 simple_expression -> term 时， 保存op-type
+                // 用产生式 simple_expression -> term 时
                 {
-                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
-                    newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
+                    strcpy(newNode.addr, GraAttrStack.top_ele().addr);
+                    //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
+                    //newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
                     break;
                 }
              case 30:
                  //用产生式 sign -> + 时, 保存 sign 的类型
                 {
-                    tmp_int = PLUS;
-                    newNode.attr_ptr->set_attr("sign", INT, &tmp_int);
+                    newNode.type = PLUS;
+                    //tmp_int = PLUS;
+                    //newNode.attr_ptr->set_attr("sign", INT, &tmp_int);
                     break;
                 }
              case 31:
                  //用产生式 sign -> - 时, 保存 sign 的类型
                 {
-                    tmp_int = MINUS;
-                    newNode.attr_ptr->set_attr("sign", INT, &tmp_int);
+                    newNode.type = MINUS;
+                    //tmp_int = MINUS;
+                    //newNode.attr_ptr->set_attr("sign", INT, &tmp_int);
                     break;
                 }
               case 38:
                 // 用产生式 plus_min_op -> + 时， 保存op-type
                 {
-                    tmp_int = PLUS;
-                    newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                    newNode.type = PLUS;
+                    //tmp_int = PLUS;
+                    //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
                     break;
                 }
                 case 39:
                 // 用产生式 plus_min_op -> - 时， 保存op-type
                 {
-                    tmp_int = MINUS;
-                    newNode.attr_ptr->set_attr("type", INT, &tmp_int);
+                     newNode.type = MINUS;
+                    //tmp_int = MINUS;
+                    //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
                     break;
                 }
                 case 48:
@@ -643,8 +705,9 @@ void Yaccer::LR_analysis(const char* token_file)
                 {
                     char newlabel[MAX_LEN];
                     newtmp(newlabel);
-                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
-                    int sign = *((int*)((GraAttrStack.top_ele_by_off(-1).attr_ptr)->search_attr("sign")->var_p));
+                    //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
+                    int sign = GraAttrStack.top_ele_by_off(-1).type;
+                    //int sign = *((int*)((GraAttrStack.top_ele_by_off(-1).attr_ptr)->search_attr("sign")->var_p));
                     if (sign == PLUS)
                     {
                         //fprintf(out, "%s := %s", newlabel, tmp_str);
@@ -659,9 +722,10 @@ void Yaccer::LR_analysis(const char* token_file)
                         CodeStream[nextquad].type = ASSIGN_FORM_2;
                     }
                     CodeStream[nextquad].result_addr = newlabel;
-                    CodeStream[nextquad].arg1_addr = tmp_str;
+                    CodeStream[nextquad].arg1_addr = GraAttrStack.top_ele().addr;
                     nextquad++;
-                    newNode.attr_ptr->set_attr("addr", STRING, newlabel);
+                    //newNode.attr_ptr->set_attr("addr", STRING, newlabel);
+                    strcpy(newNode.addr, newlabel);
                     break;
                 }
                 case 55:
@@ -669,10 +733,11 @@ void Yaccer::LR_analysis(const char* token_file)
                 {
                     char newlabel[MAX_LEN];
                     newtmp(newlabel);
-                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
-                    char tmp_str2[MAX_LEN];
-                    strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
-                    int type = *((int*)((GraAttrStack.top_ele_by_off(-1).attr_ptr)->search_attr("type")->var_p));
+                    //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
+                    //char tmp_str2[MAX_LEN];
+                    //strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
+                    //int type = *((int*)((GraAttrStack.top_ele_by_off(-1).attr_ptr)->search_attr("type")->var_p));
+                    int type = GraAttrStack.top_ele_by_off(-1).type;
                     if (type == PLUS)
                     {
                         //fprintf(out, "%s := %s + %s\n", newlabel, tmp_str, tmp_str2);
@@ -686,49 +751,52 @@ void Yaccer::LR_analysis(const char* token_file)
                         CodeStream[nextquad].type = ASSIGN_FORM_3;
                     }
                     CodeStream[nextquad].result_addr = newlabel;
-                    CodeStream[nextquad].arg1_addr = tmp_str;
-                    CodeStream[nextquad].arg2_addr = tmp_str2;
+                    CodeStream[nextquad].arg1_addr = GraAttrStack.top_ele().addr;
+                    CodeStream[nextquad].arg2_addr = GraAttrStack.top_ele_by_off(-2).addr;
                     nextquad++;
-                    newNode.attr_ptr->set_attr("addr", STRING, newlabel);
+                    strcpy(newNode.addr, newlabel);
+                    //newNode.attr_ptr->set_attr("addr", STRING, newlabel);
                     break;
                 }
                 case 36:
                 //用产生式：expression -> simple_expression 来规约时
                 {
-                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
-                    newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
+                    strcpy(newNode.addr, GraAttrStack.top_ele().addr);
+                    //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
+                    //newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
                     break;
                 }
                 case 14:
                 //用产生式：variable -> id 来规约时
                 {
-                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("name")->var_p));
-                    newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
-                    tmp_int = -1;
+                    strcpy(newNode.addr, GraAttrStack.top_ele().addr);
+                    //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("name")->var_p));
+                    //newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
+                    //tmp_int = -1;
                     newNode.offset = -1;
                     break;
                 }
                 case 35:
                 //用产生式：statement -> variable assignop expression 来规约时
                 {
-                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
-                    char tmp_str2[MAX_LEN];
-                    strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
+                    //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
+                    //char tmp_str2[MAX_LEN];
+                    //strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
                     int offset_ = GraAttrStack.top_ele_by_off(-2).offset;
                     CodeStream[nextquad].op = ":=";
                     if (offset_ == -1)
                         //simple var
                     {
                         //fprintf(out, "%s := %s \n", tmp_str2, tmp_str);
-                        CodeStream[nextquad].result_addr = tmp_str2;
-                        CodeStream[nextquad].arg1_addr = tmp_str;
+                        CodeStream[nextquad].result_addr = GraAttrStack.top_ele_by_off(-2).addr;
+                        CodeStream[nextquad].arg1_addr = GraAttrStack.top_ele().addr;
                         CodeStream[nextquad].type = ASSIGN_FORM_1;
                     }
                     else
                     {
                         //fprintf(out, "%s[%d] := %s\n", tmp_str2, offset_, tmp_str);
-                        CodeStream[nextquad].result_addr = tmp_str2;
-                        CodeStream[nextquad].arg1_addr = tmp_str;
+                        CodeStream[nextquad].result_addr = GraAttrStack.top_ele_by_off(-2).addr;
+                        CodeStream[nextquad].arg1_addr = GraAttrStack.top_ele().addr;
                         CodeStream[nextquad].type = ARRAY;
                         CodeStream[nextquad].offset = offset_;
                     }
@@ -771,12 +839,12 @@ void Yaccer::LR_analysis(const char* token_file)
                     newNode.truelist = makelist(nextquad);
                     newNode.falselist = makelist(nextquad+1);
                     CodeStream[nextquad].type = IF;
-                    CodeStream[nextquad].op += GraAttrStack.top_ele_by_off(-1).relop_name;
-                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
-                    char tmp_str2[MAX_LEN];
-                    strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
-                    CodeStream[nextquad].arg1_addr = tmp_str;
-                    CodeStream[nextquad].arg2_addr = tmp_str2;
+                    CodeStream[nextquad].op = GraAttrStack.top_ele_by_off(-1).addr;
+                    //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
+                    //char tmp_str2[MAX_LEN];
+                    //strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
+                    CodeStream[nextquad].arg1_addr = GraAttrStack.top_ele().addr;
+                    CodeStream[nextquad].arg2_addr =  GraAttrStack.top_ele_by_off(-2).addr;
                     CodeStream[nextquad+1].op = "GOTO";
                     CodeStream[nextquad+1].type = GOTO;
                     nextquad += 2;
@@ -785,37 +853,42 @@ void Yaccer::LR_analysis(const char* token_file)
                 case 40:
                 // 用产生式：relop -> > 来规约时
                 {
-                    newNode.relop_name = ">";
+                    strcpy(newNode.addr, ">");
                     break;
                 }
                 case 41:
                 // 用产生式：relop -> < 来规约时
                 {
-                    newNode.relop_name = "<";
+                    strcpy(newNode.addr, "<");
+                    //newNode.addr = "<";
                     break;
                 }
                 case 42:
                 // 用产生式：relop -> = 来规约时
                 {
-                    newNode.relop_name = "==";
+                    strcpy(newNode.addr, "=");
+                    //newNode.relop_name = "==";
                     break;
                 }
                 case 43:
                 // 用产生式：relop -> >= 来规约时
                 {
-                    newNode.relop_name = ">=";
+                    strcpy(newNode.addr, ">=");
+                    //newNode.relop_name = ">=";
                     break;
                 }
                 case 44:
                 // 用产生式：relop -> <= 来规约时
                 {
-                    newNode.relop_name = "<=";
+                    strcpy(newNode.addr, "<=");
+                    //newNode.relop_name = "<=";
                     break;
                 }
                 case 45:
                 // 用产生式：relop -> <> 来规约时
                 {
-                    newNode.relop_name = "<>";
+                    strcpy(newNode.addr, "<>");
+                    //newNode.relop_name = "<>";
                     break;
                 }
             }
