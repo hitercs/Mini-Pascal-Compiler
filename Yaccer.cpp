@@ -10,11 +10,15 @@
 #include "constStrings.h"
 #include <fstream>
 #include <sstream>
+#define ASSIGN_FORM_3 -1000
+#define ASSIGN_FORM_2 -1001
+#define ASSIGN_FORM_1 -1002
 #define ENP 0
 #define START_S 0
 using namespace std;
 char pros_str[200][200];
 char terminals_str[200][100];
+threeAddrCode CodeStream[100];
 Yaccer::Yaccer(Lexer& fromlex, const char* file_str, const char* prod_file, const char* ter_file, const char* pro_str_file)
 {
     memset(GOTO_TABLE, 0, STATUS_NUM*VAR_NUM*sizeof(int));
@@ -22,6 +26,7 @@ Yaccer::Yaccer(Lexer& fromlex, const char* file_str, const char* prod_file, cons
     lex = fromlex;
     current_level = 0;
     curTmp = 0;
+    nextquad = 1;
     SymbolTableRoot = NULL;
     out = fopen("threeAddr.txt", "w");
     if (!(file_str==NULL))
@@ -42,6 +47,35 @@ Yaccer::Yaccer(Lexer& fromlex, const char* file_str, const char* prod_file, cons
     }
     else
         cout << "Warning: token file name is not specified" << endl;
+}
+
+//*********************回填链表操作定义*****************************
+vector<int> Yaccer::merge_list(vector<int> a, vector<int> b)
+{
+    vector<int> ret;
+    for (vector<int> :: iterator iter = a.begin(); iter != a.end(); iter++)
+        ret.push_back(*iter);
+    for (vector<int> :: iterator iter = b.begin(); iter != b.end(); iter++)
+    {
+        if ( !(std::find(ret.begin(), ret.end(), *iter) != ret.end()) )
+            ret.push_back(*iter);
+    }
+    return ret;
+}
+void Yaccer::backpatch(vector<int> list_, int quad)
+{
+    for (vector <int> :: iterator iter = list_.begin(); iter != list_.end(); iter++)
+    {
+        CodeStream[*iter].result_addr = intToString(quad);
+        //fprintf(out, "%s := %s %s %s\n", CodeStream[*iter].result_addr.c_str(), CodeStream[*iter].arg1_addr.c_str(), CodeStream[*iter].op.c_str(), CodeStream[*iter].arg2_addr.c_str());
+    }
+}
+
+vector<int> Yaccer::makelist(int quad)
+{
+    vector<int> newlist;
+    newlist.push_back(quad);
+    return newlist;
 }
 
 void Yaccer::readProstr(const char* file_str)
@@ -206,6 +240,39 @@ void Yaccer::enterproc(HierachSymbols* ptr, char name[], HierachSymbols* child)
     else
     {
         printf("Symbol table childs full\n");
+    }
+}
+
+void Yaccer::write_back_file()
+{
+    int i;
+    for (i=1;i<nextquad;i++)
+    {
+        switch(CodeStream[i].type)
+        {
+        case IF:
+            fprintf(out, "IF %s %s %s GOTO %s\n", CodeStream[i].arg1_addr.c_str(),  CodeStream[i].op.c_str(),  CodeStream[i].arg2_addr.c_str(), CodeStream[i].result_addr.c_str());
+            break;
+        case GOTO:
+            fprintf(out, "GOTO %s \n", CodeStream[i].result_addr.c_str());
+            break;
+        case ASSIGN_FORM_1:
+            fprintf(out, "%s := %s\n", CodeStream[i].result_addr.c_str(), CodeStream[i].arg1_addr.c_str());
+            break;
+        case ASSIGN_FORM_2:
+            fprintf(out, "%s := %s %s\n", CodeStream[i].result_addr.c_str(), CodeStream[i].op.c_str(), CodeStream[i].arg1_addr.c_str());
+            break;
+        case ASSIGN_FORM_3:
+            fprintf(out, "%s := %s %s %s\n", CodeStream[i].result_addr.c_str(), CodeStream[i].arg1_addr.c_str() , CodeStream[i].op.c_str(),  CodeStream[i].arg2_addr.c_str());
+            break;
+        case ID:
+            fprintf(out, "%s := %s \n", CodeStream[i].result_addr.c_str(), CodeStream[i].arg1_addr.c_str());
+            break;
+        case ARRAY:
+            fprintf(out, "%s[%d] := %s \n", CodeStream[i].result_addr.c_str(), CodeStream[i].offset, CodeStream[i].arg1_addr.c_str());
+            break;
+        }
+
     }
 }
 
@@ -504,9 +571,21 @@ void Yaccer::LR_analysis(const char* token_file)
                     strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
                     int type = *((int*)((GraAttrStack.top_ele_by_off(-1).attr_ptr)->search_attr("type")->var_p));
                     if (type == MULTI)
-                        fprintf(out, "%s := %s * %s", newlabel, tmp_str, tmp_str2);
+                    {
+                        //fprintf(out, "%s := %s * %s", newlabel, tmp_str, tmp_str2);
+                        CodeStream[nextquad].op = "*";
+                        CodeStream[nextquad].type = ASSIGN_FORM_3;
+                    }
                     else if (type == DIV)
-                        fprintf(out, "%s := %s / %s", newlabel, tmp_str, tmp_str2);
+                    {
+                        //fprintf(out, "%s := %s / %s", newlabel, tmp_str, tmp_str2);
+                        CodeStream[nextquad].op = "/";
+                        CodeStream[nextquad].type = ASSIGN_FORM_3;
+                    }
+                    CodeStream[nextquad].result_addr = newlabel;
+                    CodeStream[nextquad].arg1_addr = tmp_str;
+                    CodeStream[nextquad].result_addr = tmp_str2;
+                    nextquad++;
                     newNode.attr_ptr->set_attr("addr", STRING, newlabel);
                     break;
                 }
@@ -567,9 +646,21 @@ void Yaccer::LR_analysis(const char* token_file)
                     strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
                     int sign = *((int*)((GraAttrStack.top_ele_by_off(-1).attr_ptr)->search_attr("sign")->var_p));
                     if (sign == PLUS)
-                        fprintf(out, "%s := %s", newlabel, tmp_str);
+                    {
+                        //fprintf(out, "%s := %s", newlabel, tmp_str);
+                        CodeStream[nextquad].op = "+";
+                        CodeStream[nextquad].type = ASSIGN_FORM_2;
+
+                    }
                     else if (sign == MINUS)
-                        fprintf(out, "%s := - %s", newlabel, tmp_str);
+                    {
+                        //fprintf(out, "%s := - %s", newlabel, tmp_str);
+                        CodeStream[nextquad].op = "-";
+                        CodeStream[nextquad].type = ASSIGN_FORM_2;
+                    }
+                    CodeStream[nextquad].result_addr = newlabel;
+                    CodeStream[nextquad].arg1_addr = tmp_str;
+                    nextquad++;
                     newNode.attr_ptr->set_attr("addr", STRING, newlabel);
                     break;
                 }
@@ -583,9 +674,21 @@ void Yaccer::LR_analysis(const char* token_file)
                     strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
                     int type = *((int*)((GraAttrStack.top_ele_by_off(-1).attr_ptr)->search_attr("type")->var_p));
                     if (type == PLUS)
-                        fprintf(out, "%s := %s + %s\n", newlabel, tmp_str, tmp_str2);
+                    {
+                        //fprintf(out, "%s := %s + %s\n", newlabel, tmp_str, tmp_str2);
+                        CodeStream[nextquad].op = "+";
+                        CodeStream[nextquad].type = ASSIGN_FORM_3;
+                    }
                     else if (type == MINUS)
-                        fprintf(out, "%s := %s - %s\n", newlabel, tmp_str, tmp_str2);
+                    {
+                        //fprintf(out, "%s := %s - %s\n", newlabel, tmp_str, tmp_str2);
+                        CodeStream[nextquad].op = "-";
+                        CodeStream[nextquad].type = ASSIGN_FORM_3;
+                    }
+                    CodeStream[nextquad].result_addr = newlabel;
+                    CodeStream[nextquad].arg1_addr = tmp_str;
+                    CodeStream[nextquad].arg2_addr = tmp_str2;
+                    nextquad++;
                     newNode.attr_ptr->set_attr("addr", STRING, newlabel);
                     break;
                 }
@@ -602,7 +705,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("name")->var_p));
                     newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
                     tmp_int = -1;
-                    newNode.attr_ptr->set_attr("offset", INT, &tmp_int);
+                    newNode.offset = -1;
                     break;
                 }
                 case 35:
@@ -611,15 +714,110 @@ void Yaccer::LR_analysis(const char* token_file)
                     strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
                     char tmp_str2[MAX_LEN];
                     strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
-                    int offset_ = *((int*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("offset")->var_p));
+                    int offset_ = GraAttrStack.top_ele_by_off(-2).offset;
+                    CodeStream[nextquad].op = ":=";
                     if (offset_ == -1)
                         //simple var
-                        fprintf(out, "%s := %s \n", tmp_str2, tmp_str);
+                    {
+                        //fprintf(out, "%s := %s \n", tmp_str2, tmp_str);
+                        CodeStream[nextquad].result_addr = tmp_str2;
+                        CodeStream[nextquad].arg1_addr = tmp_str;
+                        CodeStream[nextquad].type = ASSIGN_FORM_1;
+                    }
                     else
-                        fprintf(out, "%s[%d] := %s\n", tmp_str2, offset_, tmp_str);
+                    {
+                        //fprintf(out, "%s[%d] := %s\n", tmp_str2, offset_, tmp_str);
+                        CodeStream[nextquad].result_addr = tmp_str2;
+                        CodeStream[nextquad].arg1_addr = tmp_str;
+                        CodeStream[nextquad].type = ARRAY;
+                        CodeStream[nextquad].offset = offset_;
+                    }
+                    nextquad++;
                     break;
                 }
-
+                //***************************以下是控制语句的翻译*****************************
+                case 15:
+                //用产生式：M1 -> ε 来规约时
+                {
+                    newNode.quad = nextquad;
+                    break;
+                }
+                case 59:
+                //用产生式：M2 -> ε 来规约时
+                {
+                    newNode.quad = nextquad;
+                    break;
+                }
+                case 62:
+                //用产生式：N -> ε 来规约时
+                {
+                    newNode.nextlist = makelist(nextquad);
+                    CodeStream[nextquad].op = "GOTO";
+                    CodeStream[nextquad].type = GOTO;
+                    nextquad++;
+                    break;
+                }
+                case 69:
+                //用产生式：statement -> if bool_expression then M1 statement N else M2 statement 来规约时, 回填
+                {
+                    backpatch(GraAttrStack.top_ele_by_off(-7).truelist, GraAttrStack.top_ele_by_off(-5).quad);
+                    backpatch(GraAttrStack.top_ele_by_off(-7).falselist, GraAttrStack.top_ele_by_off(-1).quad);
+                    newNode.nextlist = merge_list(GraAttrStack.top_ele_by_off(-4).nextlist, merge_list(GraAttrStack.top_ele_by_off(-3).nextlist, GraAttrStack.top_ele().nextlist));
+                    break;
+                }
+                case 54:
+                //用产生式：bool_expression -> simple_expression relop simple_expression来规约时
+                {
+                    newNode.truelist = makelist(nextquad);
+                    newNode.falselist = makelist(nextquad+1);
+                    CodeStream[nextquad].type = IF;
+                    CodeStream[nextquad].op += GraAttrStack.top_ele_by_off(-1).relop_name;
+                    strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
+                    char tmp_str2[MAX_LEN];
+                    strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
+                    CodeStream[nextquad].arg1_addr = tmp_str;
+                    CodeStream[nextquad].arg2_addr = tmp_str2;
+                    CodeStream[nextquad+1].op = "GOTO";
+                    CodeStream[nextquad+1].type = GOTO;
+                    nextquad += 2;
+                    break;
+                }
+                case 40:
+                // 用产生式：relop -> > 来规约时
+                {
+                    newNode.relop_name = ">";
+                    break;
+                }
+                case 41:
+                // 用产生式：relop -> < 来规约时
+                {
+                    newNode.relop_name = "<";
+                    break;
+                }
+                case 42:
+                // 用产生式：relop -> = 来规约时
+                {
+                    newNode.relop_name = "==";
+                    break;
+                }
+                case 43:
+                // 用产生式：relop -> >= 来规约时
+                {
+                    newNode.relop_name = ">=";
+                    break;
+                }
+                case 44:
+                // 用产生式：relop -> <= 来规约时
+                {
+                    newNode.relop_name = "<=";
+                    break;
+                }
+                case 45:
+                // 用产生式：relop -> <> 来规约时
+                {
+                    newNode.relop_name = "<>";
+                    break;
+                }
             }
             reduce_num = production[-ac][0];
             StatusStack.npop(reduce_num);
@@ -637,6 +835,7 @@ void Yaccer::LR_analysis(const char* token_file)
     if (ac==ACC)
         cout << "\nparsing succeeded" << endl;
     printf("*************************LR(1) analysis end****************************\n");
+    write_back_file();
     fclose(out);
     return;
 }

@@ -30,8 +30,9 @@
 	"DataStructure.h"
 	"hash.h"
 
-1464878562 d:\code\mycompiler\datastructure.h
-	<string.h>
+1465001559 d:\code\mycompiler\datastructure.h
+	<string>
+	<vector>
 	"hash.h"
 	"attributes.h"
 
@@ -57,17 +58,18 @@
 	<stdio.h>
 	"DataStructure.h"
 
-1464891353 source:d:\code\mycompiler\mystack.cpp
+1464993510 source:d:\code\mycompiler\mystack.cpp
 	"mystack.h"
 	"DataStructure.h"
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
 	"attributes.h"
+	"Yaccer.h"
 
 1464888678 d:\code\mycompiler\mystack.h
 
-1464976453 d:\code\mycompiler\yaccer.h
+1465002390 d:\code\mycompiler\yaccer.h
 	<Stack>
 	"DataStructure.h"
 	"mystack.h"
@@ -75,8 +77,10 @@
 	<fstream>
 	"Lexer.h"
 	"string"
+	<vector>
+	<algorithm>
 
-1464980616 source:d:\code\mycompiler\yaccer.cpp
+1464994788 source:d:\code\mycompiler\yaccer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
@@ -100,6 +104,6 @@
 	"DataStructure.h"
 	<iostream>
 
-1464873163 d:\code\mycompiler\attributes.h
+1465001299 d:\code\mycompiler\attributes.h
 	"DataStructure.h"
 

@@ -1,6 +1,7 @@
 #ifndef ATTRIBUTES_H
 #define ATTRIBUTES_H
 #include "DataStructure.h"
+using namespace std;
 typedef struct attr_node{
     attr_node* next;
     void* var_p;
@@ -22,11 +23,18 @@ private:
 };
 typedef struct GraAttrNode{
     int gra_code;
+    int quad;
+    int offset;
     Attributes* attr_ptr;
+    vector < int > truelist;
+    vector < int > falselist;
+    vector < int > nextlist;
+    string relop_name;
     GraAttrNode()
     {
         gra_code = 0;
         attr_ptr = NULL;
+        quad = -1;
     }
 }GraAttrNode;
 #endif // ATTRIBUTES_H

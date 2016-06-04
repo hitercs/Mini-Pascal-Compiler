@@ -7,9 +7,11 @@
 #include <fstream>
 #include "Lexer.h"
 #include "string"
-#define STATUS_NUM      1000
-#define TERMINAL_NUM    200
-#define VAR_NUM         200
+#include <vector>
+#include <algorithm>
+#define STATUS_NUM      500
+#define TERMINAL_NUM    100
+#define VAR_NUM         50
 #define ERROR           0
 #define ACC             -100000
 using namespace std;
@@ -20,6 +22,17 @@ public:
     void install_table(const char* file_str);    // install goto table and action table
     void LR_analysis(const char* token_file);    // LR analysis
 private:
+    char iToA[20];
+	string intToString(int i)
+	{
+		sprintf(iToA, "%d", i);
+		return string(iToA);
+	}
+	void write_back_file();
+    vector<int> merge_list(vector<int> a, vector<int> b);
+    void backpatch(vector<int> list, int quad);
+    vector<int> makelist(int quad);
+    int nextquad;
     symbol* lookup(char key_[]);
     void newtmp(char ret[]);
     void readProstr(const char* file_str);

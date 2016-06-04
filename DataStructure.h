@@ -7,9 +7,11 @@
 #define FLOAT_SIZE  200
 #define STRING_SIZE 200
 #define MAX_CHILD_N 20 // 最大嵌套层数
-#include <string.h>
+#include <string>
+#include <vector>
 #include "hash.h"
 #include "attributes.h"
+using namespace std;
 // Key word type def
 typedef struct key_word{
     char name[MAX_LEN];
@@ -41,14 +43,21 @@ typedef struct token{
 }token;
 // production[VAR_LEN][0] is body size
 // production[VAR_LEN][1] is header variable
-
-
 typedef struct threeAddrCode{
-    int op;
-    int arg1_addr;  //操作数在符号表中的位置
-    int arg2_addr;
-    int result_addr;
+    int type;
+    int offset;
+    string op;
+    string arg1_addr;  //操作数在符号表中的位置
+    string arg2_addr;
+    string result_addr;
+    threeAddrCode()
+    {
+        offset = -1;
+        type = -1;
+    }
 }threeAddrCode;
+
+
 typedef struct SymHeader{
     int level;
     int total_varsize;
