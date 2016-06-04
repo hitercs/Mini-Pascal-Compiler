@@ -7,9 +7,14 @@ ___tmp1 := S - T
 RESULT := ___tmp1
 SUM := 1
 IF I < 5 GOTO 11
-GOTO 16 
+GOTO 19 
 ___tmp2 := I + SUM
 SUM := ___tmp2
 GOTO 9 
 TMP1 := 1
 TMP2 := 2
+PARAM TMP1
+PARAM TMP2
+CALL ABS
+PARAM 5
+CALL TEST

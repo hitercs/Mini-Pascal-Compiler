@@ -6,6 +6,7 @@
 #include "BiBuffer.h"
 #include "Yaccer.h"
 #include "mystack.h"
+#include <queue>
 #include "CodeDef.h"
 #include "constStrings.h"
 #include <fstream>
@@ -13,6 +14,8 @@
 #define ASSIGN_FORM_3 -1000
 #define ASSIGN_FORM_2 -1001
 #define ASSIGN_FORM_1 -1002
+#define CALL_         -1003
+#define PARAM         -1004
 #define ENP 0
 #define START_S 0
 using namespace std;
@@ -271,6 +274,12 @@ void Yaccer::write_back_file()
         case ARRAY:
             fprintf(out, "%s[%d] := %s \n", CodeStream[i].result_addr.c_str(), CodeStream[i].offset, CodeStream[i].arg1_addr.c_str());
             break;
+        case PARAM:
+            fprintf(out, "PARAM %s\n", CodeStream[i].result_addr.c_str());
+            break;
+        case CALL_:
+            fprintf(out, "CALL %s\n", CodeStream[i].result_addr.c_str());
+            break;
         }
 
     }
@@ -296,6 +305,7 @@ void Yaccer::LR_analysis(const char* token_file)
     int reduce_num;
     HierachSymbols* newTable;
     MyStack<GraAttrNode> ID_STACK;
+    queue<GraAttrNode> paraSTACK;
     while (ac != ACC)
     {
         if (ac > 0) // indicate shift
@@ -921,6 +931,38 @@ void Yaccer::LR_analysis(const char* token_file)
                     newNode.nextlist = GraAttrStack.top_ele().nextlist;
                     break;
                 }
+                //*************************************过程调用与返回*******************************
+                case 53:
+                // 用产生式： procedure_statement -> id ( expression_list ) 来规约
+                {
+                    GraAttrNode node;
+                    while(!paraSTACK.empty())
+                    {
+                        node = paraSTACK.front();
+                        CodeStream[nextquad].type = PARAM;
+                        CodeStream[nextquad].result_addr = node.addr;
+                        nextquad++;
+                        paraSTACK.pop();
+                    }
+                    CodeStream[nextquad].type = CALL_;
+                    CodeStream[nextquad].result_addr = GraAttrStack.top_ele_by_off(-3).addr;
+                    nextquad++;
+                    break;
+                }
+                case 62:
+                // 用产生式：expression_list -> expression_list , expression 规约
+                {
+                    paraSTACK.push(GraAttrStack.top_ele());
+                    break;
+                }
+                case 37:
+                // 用产生式：expression_list -> expression 规约
+                {
+                    paraSTACK.push(GraAttrStack.top_ele());
+                    break;
+                }
+
+                //****************************************************************************
             }
             reduce_num = production[-ac][0];
             StatusStack.npop(reduce_num);

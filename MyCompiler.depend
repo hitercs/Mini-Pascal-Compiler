@@ -80,7 +80,7 @@
 	<vector>
 	<algorithm>
 
-1465014075 source:d:\code\mycompiler\yaccer.cpp
+1465017416 source:d:\code\mycompiler\yaccer.cpp
 	<iostream>
 	<stdio.h>
 	<stdlib.h>
@@ -89,6 +89,7 @@
 	"BiBuffer.h"
 	"Yaccer.h"
 	"mystack.h"
+	<queue>
 	"CodeDef.h"
 	"constStrings.h"
 	<fstream>

@@ -25,5 +25,6 @@ end;
 begin
 	tmp1 := 1;
 	tmp2 := 2;
-	abs(tmp1, tmp2)
+	abs(tmp1, tmp2);
+	test ( 5 )
 end
