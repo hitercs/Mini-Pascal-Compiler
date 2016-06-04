@@ -21,6 +21,7 @@ standard_type -> integer
 standard_type -> real
 subprogram_declaration -> subprogram_head declarations compound_statement
 compound_statement -> begin optional_statements end
+M3 -> ¦Å
 simple_expression -> term
 term -> factor
 factor -> num
@@ -31,7 +32,6 @@ sign -> +
 sign -> -
 bool_expression -> true
 bool_expression -> false
-statement_list -> statement_list semi statement
 statement -> variable assignop expression
 expression -> simple_expression
 expression_list -> expression
@@ -49,6 +49,7 @@ simple_expression -> sign term
 bool_expression -> not bool_expression
 subprogram_head -> procedure id arguments semi
 declaration -> declaration semi identifier_list : type
+statement_list -> statement_list semi M3 statement
 procedure_statement -> id ( expression_list )
 variable -> id [ expression ]
 bool_expression -> simple_expression relop simple_expression

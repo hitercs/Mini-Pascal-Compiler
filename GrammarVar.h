@@ -32,5 +32,6 @@
 #define MUL_DIV_OP -30
 #define BOOL_EXPRESSION -31
 #define NUM -32
+#define M3 -33
 
 #endif // GRAMMARVAR_H

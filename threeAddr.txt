@@ -1,9 +1,15 @@
-IF T > S GOTO 3
+IF S > T GOTO 3
 GOTO 6 
 ___tmp0 := T - S
 RESULT := ___tmp0
-GOTO  
+GOTO 9 
 ___tmp1 := S - T
 RESULT := ___tmp1
+SUM := 1
+IF I < 5 GOTO 11
+GOTO 16 
+___tmp2 := I + SUM
+SUM := ___tmp2
+GOTO 9 
 TMP1 := 1
 TMP2 := 2

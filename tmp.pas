@@ -13,6 +13,15 @@ begin
 	else
 		result := t - s
 end;
+procedure test (  i : integer) ;
+var 
+	sum : integer;
+begin
+	sum := 1;
+	while ( i < 5 )
+	do
+		sum  :=  sum + i
+end;
 begin
 	tmp1 := 1;
 	tmp2 := 2;

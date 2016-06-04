@@ -385,7 +385,7 @@ void Yaccer::LR_analysis(const char* token_file)
                 //tmp_int = sizeof(float);
                 //newNode.attr_ptr->set_attr("width", INT, &tmp_int);
                 break;
-            case 68:
+            case 69:
                 // 用产生式type -> array [ integer .. integer ] of standard_type 来规约时，添加：综合属性 type.type, type.width
                 {
                     int left_dig = GraAttrStack.top_ele_by_off(-5).var_int;
@@ -497,7 +497,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     current_level--;
                     break;
                 }
-             case 64:
+             case 65:
                 {
                     //用产生式 subprogram_head -> function id arguments : standard_type semi 来规约时，新建一个符号表
                     current_level++;
@@ -534,7 +534,7 @@ void Yaccer::LR_analysis(const char* token_file)
                 }
               //**********************以上是声明语句的翻译********************************
               //**********************以下是赋值语句的翻译********************************
-             case 27:
+             case 28:
                  // 用产生式 factor -> id 来规约时，通过ID.name 查符号表
                 {
                     //strcpy(tmp_str,(char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("name")->var_p));
@@ -550,7 +550,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     //newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
                     break;
                 }
-             case 28:
+             case 29:
                 // 用产生式 num -> integer 来规约时
                 {
                     newNode.type = (GraAttrStack.top_ele()).type;
@@ -565,7 +565,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     */
                     break;
                 }
-             case 29:
+             case 30:
                  // 用产生式 num -> real 来规约时
                 {
                     newNode.type = (GraAttrStack.top_ele()).type;
@@ -579,7 +579,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     break;
                     */
                 }
-             case 26:
+             case 27:
                  // 当用产生式 factor -> num 来规约时
                 {
                     //char newlabel[MAX_LEN];
@@ -606,7 +606,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     //newNode.attr_ptr->set_attr("addr", STRING, var);
                     break;
                 }
-             case 25:
+             case 26:
                  // 用产生式 term -> factor 来规约时
                 {
                     strcpy(newNode.addr, GraAttrStack.top_ele().addr);
@@ -614,7 +614,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     //newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
                     break;
                 }
-             case 56:
+             case 57:
                  // 用产生式 term -> term mul_div_op factor 来规约时, 输出三地址码
                 {
                     char newlabel[MAX_LEN];
@@ -660,7 +660,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
                     break;
                 }
-             case 24:
+             case 25:
                 // 用产生式 simple_expression -> term 时
                 {
                     strcpy(newNode.addr, GraAttrStack.top_ele().addr);
@@ -668,7 +668,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     //newNode.attr_ptr->set_attr("addr", STRING, tmp_str);
                     break;
                 }
-             case 30:
+             case 31:
                  //用产生式 sign -> + 时, 保存 sign 的类型
                 {
                     newNode.type = PLUS;
@@ -676,7 +676,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     //newNode.attr_ptr->set_attr("sign", INT, &tmp_int);
                     break;
                 }
-             case 31:
+             case 32:
                  //用产生式 sign -> - 时, 保存 sign 的类型
                 {
                     newNode.type = MINUS;
@@ -728,7 +728,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     strcpy(newNode.addr, newlabel);
                     break;
                 }
-                case 55:
+                case 56:
                 // 用产生式：simple_expression -> simple_expression plus_min_op term 来规约
                 {
                     char newlabel[MAX_LEN];
@@ -810,13 +810,13 @@ void Yaccer::LR_analysis(const char* token_file)
                     newNode.quad = nextquad;
                     break;
                 }
-                case 59:
+                case 60:
                 //用产生式：M2 -> ε 来规约时
                 {
                     newNode.quad = nextquad;
                     break;
                 }
-                case 62:
+                case 63:
                 //用产生式：N -> ε 来规约时
                 {
                     newNode.nextlist = makelist(nextquad);
@@ -825,7 +825,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     nextquad++;
                     break;
                 }
-                case 69:
+                case 70:
                 //用产生式：statement -> if bool_expression then M1 statement N else M2 statement 来规约时, 回填
                 {
                     backpatch(GraAttrStack.top_ele_by_off(-7).truelist, GraAttrStack.top_ele_by_off(-5).quad);
@@ -833,7 +833,7 @@ void Yaccer::LR_analysis(const char* token_file)
                     newNode.nextlist = merge_list(GraAttrStack.top_ele_by_off(-4).nextlist, merge_list(GraAttrStack.top_ele_by_off(-3).nextlist, GraAttrStack.top_ele().nextlist));
                     break;
                 }
-                case 54:
+                case 55:
                 //用产生式：bool_expression -> simple_expression relop simple_expression来规约时
                 {
                     newNode.truelist = makelist(nextquad);
@@ -843,8 +843,8 @@ void Yaccer::LR_analysis(const char* token_file)
                     //strcpy(tmp_str, (char*)((GraAttrStack.top_ele().attr_ptr)->search_attr("addr")->var_p));
                     //char tmp_str2[MAX_LEN];
                     //strcpy(tmp_str2, (char*)((GraAttrStack.top_ele_by_off(-2).attr_ptr)->search_attr("addr")->var_p));
-                    CodeStream[nextquad].arg1_addr = GraAttrStack.top_ele().addr;
-                    CodeStream[nextquad].arg2_addr =  GraAttrStack.top_ele_by_off(-2).addr;
+                    CodeStream[nextquad].arg1_addr = GraAttrStack.top_ele_by_off(-2).addr;
+                    CodeStream[nextquad].arg2_addr =  GraAttrStack.top_ele().addr;
                     CodeStream[nextquad+1].op = "GOTO";
                     CodeStream[nextquad+1].type = GOTO;
                     nextquad += 2;
@@ -891,14 +891,34 @@ void Yaccer::LR_analysis(const char* token_file)
                     //newNode.relop_name = "<>";
                     break;
                 }
-                case 66:
+                case 67:
                 // 用产生式：statement -> while M1 bool_expression do M2 statement
                 {
                     backpatch(GraAttrStack.top_ele().nextlist, GraAttrStack.top_ele_by_off(-4).quad);
                     backpatch(GraAttrStack.top_ele_by_off(-3).truelist, GraAttrStack.top_ele_by_off(-1).quad);
                     newNode.nextlist = GraAttrStack.top_ele_by_off(-3).falselist;
-                    CodeStream[nextquad++].type = GOTO;
-                    CodeStream[nextquad++].result_addr = intToString(GraAttrStack.top_ele_by_off(-4).quad);
+                    CodeStream[nextquad].type = GOTO;
+                    CodeStream[nextquad].result_addr = intToString(GraAttrStack.top_ele_by_off(-4).quad);
+                    nextquad++;
+                    break;
+                }
+                case 24:
+                // 用产生式：    M3 -> ε
+                {
+                    newNode.quad = nextquad;
+                    break;
+                }
+                case 52:
+                // 用产生式：  statement_list -> statement_list semi M3 statement
+                {
+                    backpatch(GraAttrStack.top_ele_by_off(-3).nextlist, GraAttrStack.top_ele_by_off(-1).quad);
+                    newNode.nextlist = GraAttrStack.top_ele().nextlist;
+                    break;
+                }
+                case 11:
+                // 用产生式：statement_list -> statement来规约
+                {
+                    newNode.nextlist = GraAttrStack.top_ele().nextlist;
                     break;
                 }
             }
