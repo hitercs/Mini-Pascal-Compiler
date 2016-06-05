@@ -2,7 +2,7 @@ program quicksort(input, output);
 var 
 	array1, array2 : array[1..20] of integer;
 	tmp1 : real;
-	tmp2 : real;
+	tmp2 : integer;
 function abs(t : real; s : real) : real;
 var 
 	result : real;

@@ -381,6 +381,7 @@ void Yaccer::LR_analysis(const char* token_file)
                 // 用产生式 standard_type => integer 来规约时，添加：属性type 和 width
                 newNode.type = INT;
                 newNode.width = sizeof(int);
+                //newNode.width = 1;
                 //tmp_int = INT;
                 //newNode.attr_ptr->set_attr("type", INT, &tmp_int);
                 //tmp_int = sizeof(int);
@@ -982,6 +983,7 @@ void Yaccer::LR_analysis(const char* token_file)
     printf("*************************LR(1) analysis end****************************\n");
     write_back_file();
     fclose(out);
+    printf("symbol table of size is %d, level is %d\n", SymbolTableRoot->header.total_varsize, SymbolTableRoot->header.level);
     return;
 }
 
