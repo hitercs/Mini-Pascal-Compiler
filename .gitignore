@@ -9,6 +9,8 @@
 *.o  
 [Dd]ebug*/  
 [Rr]elease*/  
+./bin/*
+./obj/*
 *.mode*  
 *.app/  
 *.pyc  
