@@ -1,1 +1,2 @@
-HIT CS-COMPLIER COURSE LAB : PASCAL COMPILER BUILDED WITH C++
+#Mini Pascal Compiler
+##Building with C++, course project of Harbin Institute of Technology
