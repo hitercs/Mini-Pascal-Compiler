@@ -1,2 +1,11 @@
-#Mini Pascal Compiler
-##Building with C++, course project of Harbin Institute of Technology
+# Mini Pascal Compiler
+## Installation
+- CodeBlocks 
+- C++
+## Main Components
+- Lexical Analyzer (Scanner)
+- Syntax Analyzer (Parser)
+- Semantic Analysis
+- Intermediate Code Generation 
+## TODO
+Code Refactoring
